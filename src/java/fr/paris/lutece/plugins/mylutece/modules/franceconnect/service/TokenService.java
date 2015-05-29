@@ -31,48 +31,36 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.mylutece.modules.franceconnect.web;
+package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service;
 
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.FranceConnectService;
-import fr.paris.lutece.portal.service.security.LuteceUser;
-import fr.paris.lutece.portal.service.security.SecurityService;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.Token;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
-import java.io.Writer;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
- * AuthLoginServlet
+ * TokenService
  */
-public class OAuthLogoutServlet extends HttpServlet
+public class TokenService
 {
-    @Override
-    protected void service( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
+    private static ObjectMapper _mapper = new ObjectMapper(  );
+
+    public static Token parse( String strJson )
     {
-        response.setStatus( HttpServletResponse.SC_OK );
-        response.setContentType( "text/html" );
-
-        Writer out = response.getWriter(  );
-
-        LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
-
-        if ( user != null )
+        try
         {
-            FranceConnectService.processLogout( request );
-            out.write( "Logout successful for user : " + user.getName(  ) );
+            return _mapper.readValue( strJson, Token.class );
         }
-        else
+        catch ( IOException ex )
         {
-            out.write( "No user to logout" );
+            Logger.getLogger( TokenService.class.getName(  ) ).log( Level.SEVERE, null, ex );
         }
 
-        out.flush(  );
-        out.close(  );
+        return null;
     }
 }

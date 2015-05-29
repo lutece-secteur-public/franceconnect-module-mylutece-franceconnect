@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
     <properties>
-        <title>Module d'authentification MyLutece pour FranceConnect</title>
+        <title>Module MyLutece pour FranceConnect</title>
     </properties>
     <body>
-        <section name="Module d'authentification MyLutece pour FranceConnect">
+        <section name="Module MyLutece pour FranceConnect">
             <p>
                 <img src="images/franceconnect.jpeg" />
             </p>
@@ -83,7 +83,7 @@ mylutece.url.default.redirect=../../Portal.jsp
                 
             <subsection name="Usage">
                 <p>La page d'authentification FranceConnect s'appelle à partir de l'URL suivante :</p>
-                <p><code>http://myhost/lutece/jsp/site/Portal.jsp?<strong>page=franceconnect</strong></code></p>
+                <p><code>http://myhost/lutece/jsp/site/Portal.jsp?page=franceconnect</code></p>
                 <p>
                     Il est possible de réaliser ce formulaire d'authentification dans un portlet, soit en
                     copiant le contenu du formulaire dans un portlet HTML, soit en modifiant la feuille

@@ -31,48 +31,33 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.mylutece.modules.franceconnect.web;
+package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service;
 
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.FranceConnectService;
-import fr.paris.lutece.portal.service.security.LuteceUser;
-import fr.paris.lutece.portal.service.security.SecurityService;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.Token;
+import static org.junit.Assert.*;
 
-import java.io.IOException;
-import java.io.Writer;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import org.junit.Test;
 
 /**
- * AuthLoginServlet
+ * TokenService Test
  */
-public class OAuthLogoutServlet extends HttpServlet
+public class TokenServiceTest
 {
-    @Override
-    protected void service( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
+    private static final String JSON_TOKEN = "{\"access_token\":\"608c2c4c250f9dcd118dc087cb23b2c4db2a848161044b03\",\"token_type\":\"Bearer\",\"expires_in\":3600,\"id_token\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZmNwLmludGVnMDEuZGV2LWZyYW5jZWNvbm5lY3QuZnIiLCJzdWIiOiIwMTI2MzIzNDM2MjFjMjYwMGY0M2I1YWIxOTM2NzQzZGZjOGExOTljZWNhODUxYTciLCJhdWQiOiJhOWEyNTg5NWY5ZDc2ZjZjODlhYTIxODMwNTc1YmYzNGIzZjRmNjg0YTcyYTg0YzEzYWIxYzM4MTA2NDNkODU5IiwiZXhwIjoxNDMyOTM1MTM5LCJpYXQiOjE0MzI5MzE1MzksIm5vbmNlIjoiMTNjMWMyMDk5ODlmMSIsImlkcCI6ImRnZmlwIiwiYWNyIjoiZWlkYXMyIn0.RrzwbO0ygvMbFJYYvzsx530IiJpj3iQ44GQPcpTHIKM\"}";
+
+    /**
+     * Test of parse method, of class TokenService.
+     */
+    @Test
+    public void testParse(  )
     {
-        response.setStatus( HttpServletResponse.SC_OK );
-        response.setContentType( "text/html" );
+        System.out.println( "parse" );
 
-        Writer out = response.getWriter(  );
+        String strJson = JSON_TOKEN;
+        Token token = TokenService.parse( strJson );
 
-        LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
-
-        if ( user != null )
-        {
-            FranceConnectService.processLogout( request );
-            out.write( "Logout successful for user : " + user.getName(  ) );
-        }
-        else
-        {
-            out.write( "No user to logout" );
-        }
-
-        out.flush(  );
-        out.close(  );
+        assertEquals( token.getAccessToken(  ), "608c2c4c250f9dcd118dc087cb23b2c4db2a848161044b03" );
+        assertEquals( token.getExpiresIn(  ), 3600 );
+        assertEquals( token.getTokenType(  ), "Bearer" );
     }
 }

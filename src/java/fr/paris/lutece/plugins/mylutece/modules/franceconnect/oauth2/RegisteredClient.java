@@ -139,7 +139,6 @@ public class RegisteredClient
         _strRedirectUri = strRedirectUri;
     }
 
-    
     /**
      * Returns the RedirectUris
      * @return The RedirectUris
@@ -174,9 +173,9 @@ public class RegisteredClient
             if ( !bFirst )
             {
                 sbScopes.append( '+' );
-                bFirst = false;
             }
 
+            bFirst = false;
             sbScopes.append( i.next(  ) );
         }
 
