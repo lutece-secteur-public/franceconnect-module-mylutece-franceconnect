@@ -31,37 +31,48 @@
  *
  * License 1.0
  */
+
 package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service;
 
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.Token;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
-import java.io.IOException;
-
+import fr.paris.lutece.util.signrequest.RequestAuthenticator;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.httpclient.HttpMethodBase;
 
 /**
- * TokenService Test
+ * BearerToken Authenticator
+ * 
+ * Add the access token into the request's header
  */
-public class TokenServiceTest
+public class BearerTokenAuthenticator implements RequestAuthenticator
 {
-    private static final String JSON_TOKEN = "{\"access_token\":\"608c2c4c250f9dcd118dc087cb23b2c4db2a848161044b03\",\"token_type\":\"Bearer\",\"expires_in\":3600,\"id_token\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZmNwLmludGVnMDEuZGV2LWZyYW5jZWNvbm5lY3QuZnIiLCJzdWIiOiIwMTI2MzIzNDM2MjFjMjYwMGY0M2I1YWIxOTM2NzQzZGZjOGExOTljZWNhODUxYTciLCJhdWQiOiJhOWEyNTg5NWY5ZDc2ZjZjODlhYTIxODMwNTc1YmYzNGIzZjRmNjg0YTcyYTg0YzEzYWIxYzM4MTA2NDNkODU5IiwiZXhwIjoxNDMyOTM1MTM5LCJpYXQiOjE0MzI5MzE1MzksIm5vbmNlIjoiMTNjMWMyMDk5ODlmMSIsImlkcCI6ImRnZmlwIiwiYWNyIjoiZWlkYXMyIn0.RrzwbO0ygvMbFJYYvzsx530IiJpj3iQ44GQPcpTHIKM\"}";
+    private String _strAccessToken;
+    
+    /**
+     * Constructor
+     * @param strAccessToken The access token value
+     */
+    public BearerTokenAuthenticator( String strAccessToken )
+    {
+        _strAccessToken = strAccessToken;
+    }
 
     /**
-     * Test of parse method, of class TokenService.
-     * @throws java.io.IOException
+     * {@inheritDoc }
      */
-    @Test
-    public void testParse(  ) throws IOException
+    @Override
+    public boolean isRequestAuthenticated(HttpServletRequest request)
     {
-        System.out.println( "parse" );
-
-        String strJson = JSON_TOKEN;
-        Token token = TokenService.parse( strJson );
-
-        assertEquals( token.getAccessToken(  ), "608c2c4c250f9dcd118dc087cb23b2c4db2a848161044b03" );
-        assertEquals( token.getExpiresIn(  ), 3600 );
-        assertEquals( token.getTokenType(  ), "Bearer" );
+        return false; // not used
     }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public void authenticateRequest(HttpMethodBase hmb, List<String> list)
+    {
+        hmb.addRequestHeader( "Authorization", String.format("Bearer %s", _strAccessToken ));
+    }
+    
 }

@@ -44,6 +44,11 @@ import java.io.Serializable;
  */
 public class FranceConnectUser extends LuteceUser implements Serializable
 {
+    private String _strEmail;
+    private String _strBirthPlace;
+    private String _strBirthCountry;
+            
+            
     /**
      * Constructor
      * @param strUserName The user's name
@@ -61,6 +66,53 @@ public class FranceConnectUser extends LuteceUser implements Serializable
     @Override
     public String getEmail(  )
     {
-        return getName(  );
+        return _strEmail;
     }
+    
+    /**
+     * Returns the BirthCountry
+     * @return The BirthCountry
+     */
+    public String getBirthCountry(  )
+    {
+        return _strBirthCountry;
+    }
+
+    /**
+     * Sets the BirthCountry
+     * @param strBirthCountry The BirthCountry
+     */
+    public void setBirthCountry( String strBirthCountry )
+    {
+        _strBirthCountry = strBirthCountry;
+    }
+
+    /**
+     * Returns the BirthPlace
+     * @return The BirthPlace
+     */
+    public String getBirthPlace(  )
+    {
+        return _strBirthPlace;
+    }
+
+    /**
+     * Sets the BirthPlace
+     * @param strBirthPlace The BirthPlace
+     */
+    public void setBirthPlace( String strBirthPlace )
+    {
+        _strBirthPlace = strBirthPlace;
+    }
+
+    /**
+     * Sets the Email
+     * @param strEmail         The Email
+     */
+    public void setEmail( String strEmail )
+    {
+        _strEmail = strEmail;
+    }
+
+    
 }

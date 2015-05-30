@@ -33,9 +33,9 @@
  */
 package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service;
 
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectAuthValidation;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectAuthentication;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectUser;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.UserInfo;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 
@@ -43,51 +43,54 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * France Connect Service
  */
 public final class FranceConnectService
 {
-    private static final FranceConnectAuthentication _authService = new FranceConnectAuthentication(  );
-    private static Logger _logger = Logger.getLogger( "franceconnect" );
 
-    /** private constructor */
-    private FranceConnectService(  )
+    private static final FranceConnectAuthentication _authService = new FranceConnectAuthentication();
+    private static Logger _logger = Logger.getLogger("lutece.franceconnect");
+
+    /**
+     * private constructor
+     */
+    private FranceConnectService()
     {
     }
 
     /**
      * Process the authentication
+     *
      * @param request The HTTP request
-     * @param strAuthResponse The authentication's response as JSON format
+     * @param userInfo Users Info
      */
-    public static void processAuthentication( HttpServletRequest request, String strAuthResponse )
+    public static void processAuthentication(HttpServletRequest request, UserInfo userInfo)
     {
-        _logger.debug( "Process authentication response" );
-
-        FranceConnectAuthValidation authValidation = FranceConnectUtils.parseResponse( strAuthResponse );
-
-        if ( authValidation.isOK(  ) )
-        {
-            FranceConnectUser user = new FranceConnectUser( authValidation.getEmail(  ), _authService );
-            user.setUserInfo( LuteceUser.BUSINESS_INFO_ONLINE_EMAIL, authValidation.getEmail(  ) );
-            SecurityService.getInstance(  ).registerUser( request, user );
-            _logger.debug( "Authentication successful : " + strAuthResponse );
-        }
-        else
-        {
-            _logger.debug( "Authentication failed : " + strAuthResponse );
-        }
+        FranceConnectUser user = new FranceConnectUser( userInfo.getSub(), _authService);
+        user.setUserInfo( LuteceUser.BDATE, userInfo.getBirthDate() );
+        user.setUserInfo( LuteceUser.GENDER, userInfo.getGender() );
+        user.setUserInfo( LuteceUser.NAME_FAMILY, userInfo.getFamilyName() );
+        user.setUserInfo( LuteceUser.NAME_GIVEN, userInfo.getGivenName() );
+        user.setUserInfo( LuteceUser.NAME_NICKNAME, userInfo.getNickname() );
+        user.setUserInfo( LuteceUser.NAME_MIDDLE, userInfo.getMiddleName() );
+        user.setUserInfo( LuteceUser.BUSINESS_INFO_ONLINE_EMAIL, userInfo.getEmail());
+        
+        user.setEmail( userInfo.getEmail() );
+        user.setBirthPlace( userInfo.getBirthPlace() );
+        user.setBirthCountry(userInfo.getBirthCountry() );
+        
+        SecurityService.getInstance().registerUser(request, user);
     }
 
     /**
      * Process the logout
+     *
      * @param request The HTTP request
      */
-    public static void processLogout( HttpServletRequest request )
+    public static void processLogout(HttpServletRequest request)
     {
-        _logger.debug( "Process logout" );
-        SecurityService.getInstance(  ).logoutUser( request );
+        _logger.debug("Process logout");
+        SecurityService.getInstance().logoutUser(request);
     }
 }

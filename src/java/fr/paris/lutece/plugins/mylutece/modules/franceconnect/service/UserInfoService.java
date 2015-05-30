@@ -33,52 +33,33 @@
  */
 package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service;
 
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectAuthValidation;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.UserInfo;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.IOException;
 
 
 /**
- * France Connect Utils
+ * UserInfoService
  */
-public final class FranceConnectUtils
+public final class UserInfoService
 {
-    private static final String STATUS = "status";
-    private static final String REASON = "reason";
-    private static final String EMAIL = "email";
-    private static final String AUDIENCE = "audience";
-    private static final String ISSUER = "issuer";
-    private static final String EXPIRES = "expires";
+    private static ObjectMapper _mapper = new ObjectMapper(  );
 
-    /** Private constructor */
-    private FranceConnectUtils(  )
+    /** private constructor */
+    private UserInfoService(  )
     {
     }
 
     /**
-     * Parse the authentication response
-     * @param strJSON The response as JSON format
-     * @return A an authentication validation object
+     * parse the JSON for a token
+     * @param strJson The JSON
+     * @return The UserInfo
+     * @throws java.io.IOException if an error occurs
      */
-    public static FranceConnectAuthValidation parseResponse( String strJSON )
+    public static UserInfo parse( String strJson ) throws IOException
     {
-        JSONObject jsonResponse = (JSONObject) JSONSerializer.toJSON( strJSON );
-        FranceConnectAuthValidation response = new FranceConnectAuthValidation(  );
-        response.setStatus( jsonResponse.getString( STATUS ) );
-
-        if ( response.getStatus(  ).equalsIgnoreCase( FranceConnectAuthValidation.STATUS_OK ) )
-        {
-            response.setEmail( jsonResponse.getString( EMAIL ) );
-            response.setAudience( jsonResponse.getString( AUDIENCE ) );
-            response.setIssuer( jsonResponse.getString( ISSUER ) );
-            response.setExpires( jsonResponse.getInt( EXPIRES ) );
-        }
-        else
-        {
-            response.setReason( jsonResponse.getString( REASON ) );
-        }
-
-        return response;
+        return _mapper.readValue( strJson, UserInfo.class );
     }
 }

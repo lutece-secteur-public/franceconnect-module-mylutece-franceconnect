@@ -39,28 +39,27 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 
 /**
  * TokenService
  */
-public class TokenService
+public final class TokenService
 {
     private static ObjectMapper _mapper = new ObjectMapper(  );
 
-    public static Token parse( String strJson )
+    /** private constructor */
+    private TokenService(  )
     {
-        try
-        {
-            return _mapper.readValue( strJson, Token.class );
-        }
-        catch ( IOException ex )
-        {
-            Logger.getLogger( TokenService.class.getName(  ) ).log( Level.SEVERE, null, ex );
-        }
+    }
 
-        return null;
+    /**
+     * parse the JSON for a token
+     * @param strJson The JSON
+     * @return The Token
+     * @throws java.io.IOException if an error occurs
+     */
+    public static Token parse( String strJson ) throws IOException
+    {
+        return _mapper.readValue( strJson, Token.class );
     }
 }

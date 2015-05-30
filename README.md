@@ -1,5 +1,5 @@
 
-#Module d'authentification MyLutece pour FranceConnect
+#Module MyLutece pour FranceConnect
 
 ![](http://dev.lutece.paris.fr/plugins/module-mylutece-franceconnect/images/franceconnect.jpeg)
 
@@ -71,7 +71,7 @@ Le fichier de context du module (WEB-INF/conf/plugins/mylutece-franceconnect_con
 
 La page d'authentification FranceConnect s'appelle à partir de l'URL suivante :
 
- `http://myhost/lutece/jsp/site/Portal.jsp? **page=franceconnect** ` 
+ `http://myhost/lutece/jsp/site/Portal.jsp?page=franceconnect` 
 
 Il est possible de réaliser ce formulaire d'authentification dans un portlet, soit en copiant le contenu du formulaire dans un portlet HTML, soit en modifiant la feuillede style XSL du portlet MyLutece.
 

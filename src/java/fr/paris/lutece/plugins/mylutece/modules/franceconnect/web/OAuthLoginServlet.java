@@ -36,24 +36,23 @@ package fr.paris.lutece.plugins.mylutece.modules.franceconnect.web;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.RegisteredClient;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.ServerConfiguration;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.Token;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.UserInfo;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.BearerTokenAuthenticator;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.FranceConnectService;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.TokenService;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.UserInfoService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
+import fr.paris.lutece.util.signrequest.RequestAuthenticator;
 import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.log4j.Logger;
 
-import org.apache.oltu.oauth2.client.OAuthClient;
-import org.apache.oltu.oauth2.client.URLConnectionClient;
-import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
-import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 
 import java.io.IOException;
@@ -89,6 +88,7 @@ public class OAuthLoginServlet extends HttpServlet
     private static final String PARAMETER_REDIRECT_URI = "redirect_uri";
     private static final String PARAMETER_CLIENT_ID = "client_id";
     private static final String PARAMETER_CLIENT_SECRET = "client_secret";
+    private static final String PARAMETER_ACCESS_TOKEN = "access_token";
     private static final String GRANT_TYPE_CODE = "authorization_code";
     private static final String PROPERTY_ERROR_PAGE = "mylutece-franceconnect.error.page";
     private final static String REDIRECT_URI_SESION_VARIABLE = "redirect_uri";
@@ -158,13 +158,27 @@ public class OAuthLoginServlet extends HttpServlet
         String strCode = request.getParameter( PARAMETER_CODE );
         _logger.info( "OAuth Authorization code received : " + strCode );
 
+        Token token = getToken( strCode );
+
+        if ( token != null )
+        {
+            UserInfo userInfo = getUserInfo( token );
+            if( userInfo != null )
+            {
+                FranceConnectService.processAuthentication( request , userInfo );
+                
+            }
+        }
+    }
+
+    private Token getToken( String strAuthorizationCode )
+    {
+        String strRedirectUri = _client.getRedirectUri(  );
         Map<String, String> mapParameters = new HashMap<String, String>(  );
         mapParameters.put( PARAMETER_GRANT_TYPE, GRANT_TYPE_CODE );
-        mapParameters.put( PARAMETER_CODE, strCode );
+        mapParameters.put( PARAMETER_CODE, strAuthorizationCode );
         mapParameters.put( PARAMETER_CLIENT_ID, _client.getClientId(  ) );
         mapParameters.put( PARAMETER_CLIENT_SECRET, _client.getClientSecret(  ) );
-
-        String strRedirectUri = _client.getRedirectUri(  );
 
         if ( strRedirectUri != null )
         {
@@ -181,30 +195,44 @@ public class OAuthLoginServlet extends HttpServlet
             String strResponse = httpAccess.doPost( strUrl, mapParameters );
             _logger.info( "FranceConnect response : " + strResponse );
 
-            Token token = TokenService.parse( strResponse );
-
-            OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest( _server.getUserInfoUri(  ) ).setAccessToken( token.getAccessToken(  ) )
-                                                                                                               .buildQueryMessage(  );
-
-            //            bearerClientRequest.setHeader(OAuth.HeaderType.CONTENT_TYPE, "multipart/form-data");
-            //            bearerClientRequest.setBody(photo);
-            OAuthClient oAuthClient = new OAuthClient( new URLConnectionClient(  ) );
-            OAuthResourceResponse resourceResponse = oAuthClient.resource( bearerClientRequest, OAuth.HttpMethod.POST,
-                    OAuthResourceResponse.class );
-            _logger.info( resourceResponse.getBody(  ) );
+            return TokenService.parse( strResponse );
         }
         catch ( HttpAccessException ex )
         {
             AppLogService.error( "OAuth Login Error" + ex.getMessage(  ), ex );
         }
-        catch ( OAuthSystemException ex )
+        catch ( IOException ex )
         {
             AppLogService.error( "OAuth Login Error" + ex.getMessage(  ), ex );
         }
-        catch ( OAuthProblemException ex )
+
+        return null;
+    }
+
+    private UserInfo getUserInfo( Token token )
+    {
+        HttpAccess httpAccess = new HttpAccess(  );
+       
+        String strUrl = _server.getUserInfoUri(  );
+
+        try
+        {
+            RequestAuthenticator authenticator = new BearerTokenAuthenticator( token.getAccessToken() );
+            String strResponse = httpAccess.doGet( strUrl, authenticator , null );
+            _logger.info( "FranceConnect response : " + strResponse );
+
+            return UserInfoService.parse( strResponse );
+        }
+        catch ( HttpAccessException ex )
         {
             AppLogService.error( "OAuth Login Error" + ex.getMessage(  ), ex );
         }
+        catch ( IOException ex )
+        {
+            AppLogService.error( "OAuth Login Error" + ex.getMessage(  ), ex );
+        }
+
+        return null;
     }
 
     private void handleAuthorizationRequest( HttpServletRequest request, HttpServletResponse response )
