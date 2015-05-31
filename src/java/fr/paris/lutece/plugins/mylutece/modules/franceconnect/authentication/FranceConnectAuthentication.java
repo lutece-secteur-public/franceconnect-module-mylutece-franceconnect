@@ -56,6 +56,7 @@ public class FranceConnectAuthentication extends PortalAuthentication implements
     private static final String PROPERTY_AUTH_SERVICE_NAME = "mylutece-franceconnect.service.name";
     private static final String CONSTANT_PATH_ICON = "images/local/skin/plugins/mylutece/modules/openid/mylutece-openid.png";
     private static final String PLUGIN_NAME = "mylutece-openid";
+    private static final long serialVersionUID = 1L;
 
     /**
      * Gets the Authentification service name

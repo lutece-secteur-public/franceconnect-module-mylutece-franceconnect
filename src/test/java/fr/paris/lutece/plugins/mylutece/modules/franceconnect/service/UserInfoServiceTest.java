@@ -60,8 +60,7 @@ public class UserInfoServiceTest
         String strJson = JSON;
         UserInfo userInfo = UserInfoService.parse( strJson );
 
-        assertEquals( userInfo.getGivenName(), "Pierre" );
-        assertEquals( userInfo.getFamilyName(), "Dupond" );
+        assertEquals( userInfo.getGivenName(  ), "Pierre" );
+        assertEquals( userInfo.getFamilyName(  ), "Dupond" );
     }
 }
-

@@ -44,11 +44,11 @@ import java.io.Serializable;
  */
 public class FranceConnectUser extends LuteceUser implements Serializable
 {
+    private static final long serialVersionUID = 1L;
     private String _strEmail;
     private String _strBirthPlace;
     private String _strBirthCountry;
-            
-            
+
     /**
      * Constructor
      * @param strUserName The user's name
@@ -66,9 +66,9 @@ public class FranceConnectUser extends LuteceUser implements Serializable
     @Override
     public String getEmail(  )
     {
-        return _strEmail;
+        return ( _strEmail != null ) ? _strEmail : "";
     }
-    
+
     /**
      * Returns the BirthCountry
      * @return The BirthCountry
@@ -113,6 +113,4 @@ public class FranceConnectUser extends LuteceUser implements Serializable
     {
         _strEmail = strEmail;
     }
-
-    
 }

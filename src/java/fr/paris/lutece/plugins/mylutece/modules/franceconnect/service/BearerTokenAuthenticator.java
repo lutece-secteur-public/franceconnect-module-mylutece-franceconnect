@@ -31,23 +31,26 @@
  *
  * License 1.0
  */
-
 package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service;
 
 import fr.paris.lutece.util.signrequest.RequestAuthenticator;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.httpclient.HttpMethodBase;
+
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * BearerToken Authenticator
- * 
+ *
  * Add the access token into the request's header
  */
 public class BearerTokenAuthenticator implements RequestAuthenticator
 {
     private String _strAccessToken;
-    
+
     /**
      * Constructor
      * @param strAccessToken The access token value
@@ -61,7 +64,7 @@ public class BearerTokenAuthenticator implements RequestAuthenticator
      * {@inheritDoc }
      */
     @Override
-    public boolean isRequestAuthenticated(HttpServletRequest request)
+    public boolean isRequestAuthenticated( HttpServletRequest request )
     {
         return false; // not used
     }
@@ -70,9 +73,8 @@ public class BearerTokenAuthenticator implements RequestAuthenticator
      * {@inheritDoc }
      */
     @Override
-    public void authenticateRequest(HttpMethodBase hmb, List<String> list)
+    public void authenticateRequest( HttpMethodBase hmb, List<String> list )
     {
-        hmb.addRequestHeader( "Authorization", String.format("Bearer %s", _strAccessToken ));
+        hmb.addRequestHeader( "Authorization", String.format( "Bearer %s", _strAccessToken ) );
     }
-    
 }

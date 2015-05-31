@@ -42,9 +42,9 @@ import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.FranceConn
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.TokenService;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.UserInfoService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.portal.web.PortalJspBean;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
 import fr.paris.lutece.util.signrequest.RequestAuthenticator;
@@ -52,12 +52,11 @@ import fr.paris.lutece.util.url.UrlItem;
 
 import org.apache.log4j.Logger;
 
-import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-
 import java.io.IOException;
 
 import java.math.BigInteger;
+
+import java.net.URLEncoder;
 
 import java.security.SecureRandom;
 
@@ -88,23 +87,48 @@ public class OAuthLoginServlet extends HttpServlet
     private static final String PARAMETER_REDIRECT_URI = "redirect_uri";
     private static final String PARAMETER_CLIENT_ID = "client_id";
     private static final String PARAMETER_CLIENT_SECRET = "client_secret";
+    private static final String PARAMETER_RESPONSE_TYPE = "response_type";
     private static final String PARAMETER_ACCESS_TOKEN = "access_token";
     private static final String GRANT_TYPE_CODE = "authorization_code";
     private static final String PROPERTY_ERROR_PAGE = "mylutece-franceconnect.error.page";
-    private final static String REDIRECT_URI_SESION_VARIABLE = "redirect_uri";
     private final static String STATE_SESSION_VARIABLE = "state";
     private final static String NONCE_SESSION_VARIABLE = "nonce";
-    private final static String ISSUER_SESSION_VARIABLE = "issuer";
-    private static final String TARGET_SESSION_VARIABLE = "target";
     private static final String LOGGER_FRANCECONNECT = "lutece.franceconnect";
     private static final long serialVersionUID = 1L;
     private static Logger _logger = Logger.getLogger( LOGGER_FRANCECONNECT );
     private RegisteredClient _client;
     private ServerConfiguration _server;
 
+    /**
+     * {@inheritDoc }
+     */
     @Override
     protected void service( HttpServletRequest request, HttpServletResponse response )
         throws ServletException, IOException
+    {
+        getConfiguration(  );
+
+        String strError = request.getParameter( PARAMETER_ERROR );
+        String strCode = request.getParameter( PARAMETER_CODE );
+
+        if ( strError != null )
+        {
+            handleError( request, response, strError );
+        }
+        else if ( strCode != null )
+        {
+            handleAuthorizationCodeResponse( request, response );
+        }
+        else
+        {
+            handleAuthorizationRequest( request, response );
+        }
+    }
+
+    /**
+     * Get client and server configuration
+     */
+    private void getConfiguration(  )
     {
         if ( _client == null )
         {
@@ -118,60 +142,80 @@ public class OAuthLoginServlet extends HttpServlet
             _logger.info( "OAuth Login Servlet initialization - Server Auth URI : " +
                 _server.getAuthorizationEndpointUri(  ) );
         }
-
-        String strError = request.getParameter( PARAMETER_ERROR );
-        String strCode = request.getParameter( PARAMETER_CODE );
-
-        if ( strError != null )
-        {
-            handleError( request, response );
-        }
-        else if ( strCode != null )
-        {
-            handleAuthorizationCodeResponse( request, response );
-        }
-        else
-        {
-            handleAuthorizationRequest( request, response );
-        }
     }
 
-    private void handleError( HttpServletRequest request, HttpServletResponse response )
+    /**
+     * Handle an error
+     *
+     * @param request The HTTP request
+     * @param response The HTTP response
+     * @param strError The Error message
+     */
+    private void handleError( HttpServletRequest request, HttpServletResponse response, String strError )
     {
         try
         {
-            String strError = request.getParameter( PARAMETER_ERROR );
             UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) +
                     AppPropertiesService.getProperty( PROPERTY_ERROR_PAGE ) );
             url.addParameter( PARAMETER_ERROR, strError );
-            _logger.info( "OAuth Server Authentication Error : " + strError );
+            _logger.info( strError );
             response.sendRedirect( url.getUrl(  ) );
         }
         catch ( IOException ex )
         {
-            AppLogService.error( "OAuth Login Error" + ex.getMessage(  ), ex );
+            _logger.error( "Error redirecting to the error page : " + ex.getMessage(  ), ex );
         }
     }
 
+    /**
+     * Handle an request that contains an authorization code
+     *
+     * @param request The HTTP request
+     * @param response The HTTP response
+     */
     private void handleAuthorizationCodeResponse( HttpServletRequest request, HttpServletResponse response )
     {
         String strCode = request.getParameter( PARAMETER_CODE );
         _logger.info( "OAuth Authorization code received : " + strCode );
 
-        Token token = getToken( strCode );
-
-        if ( token != null )
+        try
         {
-            UserInfo userInfo = getUserInfo( token );
-            if( userInfo != null )
+            Token token = getToken( strCode );
+
+            if ( token != null )
             {
-                FranceConnectService.processAuthentication( request , userInfo );
-                
+                UserInfo userInfo = getUserInfo( token );
+
+                if ( userInfo != null )
+                {
+                    FranceConnectService.processAuthentication( request, userInfo );
+                    response.sendRedirect( PortalJspBean.getLoginNextUrl( request ) );
+                }
             }
+        }
+        catch ( IOException ex )
+        {
+            String strError = "Error retrieving token : " + ex.getMessage(  );
+            _logger.error( strError, ex );
+            handleError( request, response, strError );
+        }
+        catch ( HttpAccessException ex )
+        {
+            String strError = "Error retrieving token : " + ex.getMessage(  );
+            _logger.error( strError, ex );
+            handleError( request, response, strError );
         }
     }
 
+    /**
+     * Retieve a token using an authorization code
+     * @param strAuthorizationCode The authorization code
+     * @return The token
+     * @throws IOException if an error occurs
+     * @throws HttpAccessException if an error occurs
+     */
     private Token getToken( String strAuthorizationCode )
+        throws IOException, HttpAccessException
     {
         String strRedirectUri = _client.getRedirectUri(  );
         Map<String, String> mapParameters = new HashMap<String, String>(  );
@@ -188,81 +232,75 @@ public class OAuthLoginServlet extends HttpServlet
         HttpAccess httpAccess = new HttpAccess(  );
         String strUrl = _server.getTokenEndpointUri(  );
 
-        try
-        {
-            _logger.info( "Post URL : " + strUrl + "\nParameters :\n" + traceMap( mapParameters ) );
+        _logger.debug( "Post URL : " + strUrl + "\nParameters :\n" + traceMap( mapParameters ) );
 
-            String strResponse = httpAccess.doPost( strUrl, mapParameters );
-            _logger.info( "FranceConnect response : " + strResponse );
+        String strResponse = httpAccess.doPost( strUrl, mapParameters );
+        _logger.debug( "FranceConnect response : " + strResponse );
 
-            return TokenService.parse( strResponse );
-        }
-        catch ( HttpAccessException ex )
-        {
-            AppLogService.error( "OAuth Login Error" + ex.getMessage(  ), ex );
-        }
-        catch ( IOException ex )
-        {
-            AppLogService.error( "OAuth Login Error" + ex.getMessage(  ), ex );
-        }
-
-        return null;
+        return TokenService.parse( strResponse );
     }
 
+    /**
+     * Get UserInfo using a token
+     * @param token The token
+     * @return User infos
+     */
     private UserInfo getUserInfo( Token token )
     {
+        UserInfo userInfo = null;
         HttpAccess httpAccess = new HttpAccess(  );
-       
+
         String strUrl = _server.getUserInfoUri(  );
 
         try
         {
-            RequestAuthenticator authenticator = new BearerTokenAuthenticator( token.getAccessToken() );
-            String strResponse = httpAccess.doGet( strUrl, authenticator , null );
-            _logger.info( "FranceConnect response : " + strResponse );
+            RequestAuthenticator authenticator = new BearerTokenAuthenticator( token.getAccessToken(  ) );
+            String strResponse = httpAccess.doGet( strUrl, authenticator, null );
+            _logger.debug( "FranceConnect response : " + strResponse );
 
-            return UserInfoService.parse( strResponse );
+            userInfo = UserInfoService.parse( strResponse );
         }
         catch ( HttpAccessException ex )
         {
-            AppLogService.error( "OAuth Login Error" + ex.getMessage(  ), ex );
+            _logger.error( "OAuth Login Error" + ex.getMessage(  ), ex );
         }
         catch ( IOException ex )
         {
-            AppLogService.error( "OAuth Login Error" + ex.getMessage(  ), ex );
+            _logger.error( "OAuth Login Error" + ex.getMessage(  ), ex );
         }
 
-        return null;
+        return userInfo;
     }
 
+    /**
+     * Handle an authorization request to obtain an authorization code
+     * @param request The HTTP request
+     * @param response The HTTP response
+     */
     private void handleAuthorizationRequest( HttpServletRequest request, HttpServletResponse response )
     {
         try
         {
-            //            String strState = AppPropertiesService.getProperty( PROPERTY_STATE );
-            //            String strNonce = AppPropertiesService.getProperty( PROPERTY_NONCE );
             HttpSession session = request.getSession( true );
 
-            OAuthClientRequest oauthRequest = OAuthClientRequest.authorizationLocation( _server.getAuthorizationEndpointUri(  ) )
-                                                                .setClientId( _client.getClientId(  ) )
-                                                                .setRedirectURI( _client.getRedirectUri(  ) )
-                                                                .setResponseType( RESPONSE_TYPE_CODE )
-                                                                .buildQueryMessage(  );
-
-            UrlItem url = new UrlItem( oauthRequest.getLocationUri(  ) );
+            UrlItem url = new UrlItem( _server.getAuthorizationEndpointUri(  ) );
+            url.addParameter( PARAMETER_CLIENT_ID, _client.getClientId(  ) );
+            url.addParameter( PARAMETER_CLIENT_SECRET, _client.getClientSecret(  ) );
+            url.addParameter( PARAMETER_RESPONSE_TYPE, RESPONSE_TYPE_CODE );
+            url.addParameter( PARAMETER_REDIRECT_URI, URLEncoder.encode( _client.getRedirectUri(  ), "UTF-8" ) );
             url.addParameter( PARAMETER_SCOPE, _client.getScopes(  ) );
             url.addParameter( PARAMETER_STATE, createState( session ) );
             url.addParameter( PARAMETER_NONCE, createNonce( session ) );
-            _logger.info( "OAuth request : " + url.getUrl(  ) );
-            response.sendRedirect( url.getUrl(  ) );
-        }
-        catch ( OAuthSystemException ex )
-        {
-            AppLogService.error( "OAuth Login Error" + ex.getMessage(  ), ex );
+
+            String strUrl = url.getUrl(  );
+            _logger.debug( "OAuth request : " + strUrl );
+            response.sendRedirect( strUrl );
         }
         catch ( IOException ex )
         {
-            AppLogService.error( "OAuth Login Error" + ex.getMessage(  ), ex );
+            String strError = "Error retrieving an authorization code : " + ex.getMessage(  );
+            _logger.error( strError, ex );
+            handleError( request, response, strError );
         }
     }
 
@@ -270,7 +308,7 @@ public class OAuthLoginServlet extends HttpServlet
      * Create a cryptographically random nonce and store it in the session
      *
      * @param session
-     * @return
+     * @return The nonce
      */
     private static String createNonce( HttpSession session )
     {
@@ -284,7 +322,7 @@ public class OAuthLoginServlet extends HttpServlet
      * Get the nonce we stored in the session
      *
      * @param session
-     * @return
+     * @return The stored nonce
      */
     private static String getStoredNonce( HttpSession session )
     {
@@ -295,7 +333,7 @@ public class OAuthLoginServlet extends HttpServlet
      * Create a cryptographically random state and store it in the session
      *
      * @param session The session
-     * @return
+     * @return The state
      */
     private static String createState( HttpSession session )
     {
@@ -309,7 +347,7 @@ public class OAuthLoginServlet extends HttpServlet
      * Get the state we stored in the session
      *
      * @param session The session
-     * @return
+     * @return The stored state
      */
     private static String getStoredState( HttpSession session )
     {
@@ -322,7 +360,7 @@ public class OAuthLoginServlet extends HttpServlet
      *
      * @param session The session
      * @param strKey The key
-     * @return
+     * @return The session string
      */
     private static String getStoredSessionString( HttpSession session, String strKey )
     {
@@ -338,6 +376,11 @@ public class OAuthLoginServlet extends HttpServlet
         }
     }
 
+    /**
+     * Utils to trace map content
+     * @param map The map
+     * @return The content
+     */
     private String traceMap( Map<String, String> map )
     {
         StringBuilder sbTrace = new StringBuilder(  );
