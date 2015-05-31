@@ -11,7 +11,7 @@
     <groupId>fr.paris.lutece.plugins</groupId>
     <artifactId>module-mylutece-franceconnect</artifactId>
     <packaging>lutece-plugin</packaging>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.9.0</version>
     <name>Lutece mylutece franceconnect module</name>
 
     <repositories>
@@ -40,13 +40,14 @@
     <properties>
         <componentName>mylutece-franceconnect</componentName>
         <jiraProjectName>FRCONNECT</jiraProjectName>
-        <jiraComponentId></jiraComponentId>
+        <jiraComponentId />
     </properties>
 
     <scm>
         <connection>scm:git:https://github.com/lutece-platform/lutece-auth-module-mylutece-franceconnect.git</connection>
         <developerConnection>scm:git:https://github.com/lutece-platform/lutece-auth-module-mylutece-franceconnect.git</developerConnection>
         <url>https://github.com/lutece-platform/lutece-auth-module-mylutece-franceconnect.git</url>
-    </scm>
+      <tag>lutece-auth-module-mylutece-franceconnect-0.9.0</tag>
+  </scm>
     
 </project>
