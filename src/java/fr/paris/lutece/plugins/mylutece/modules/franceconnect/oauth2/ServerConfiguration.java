@@ -33,12 +33,16 @@
  */
 package fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2;
 
+import java.io.Serializable;
+
 
 /**
  * ServerConfiguration
  */
-public class ServerConfiguration
+public class ServerConfiguration implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+    
     private String _strIssuer;
     private String _strAuthorizationEndpointUri;
     private String _strTokenEndpointUri;

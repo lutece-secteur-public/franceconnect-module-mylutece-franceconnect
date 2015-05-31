@@ -61,6 +61,7 @@ import java.security.SecureRandom;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -396,9 +397,9 @@ public class OAuthLoginServlet extends HttpServlet
     {
         StringBuilder sbTrace = new StringBuilder(  );
 
-        for ( String strKey : map.keySet(  ) )
+        for ( Entry entry : map.entrySet() )
         {
-            sbTrace.append( strKey ).append( ":[" ).append( map.get( strKey ) ).append( "]\n" );
+            sbTrace.append( entry.getKey() ).append( ":[" ).append( map.get( entry.getValue() ) ).append( "]\n" );
         }
 
         return sbTrace.toString(  );

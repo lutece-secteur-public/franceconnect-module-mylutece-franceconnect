@@ -57,7 +57,7 @@ public final class Constants
     public static final String NONCE_SESSION_VARIABLE = "nonce";
 
     /** Private constructor */
-    public Constants(  )
+    private Constants(  )
     {
     }
 }

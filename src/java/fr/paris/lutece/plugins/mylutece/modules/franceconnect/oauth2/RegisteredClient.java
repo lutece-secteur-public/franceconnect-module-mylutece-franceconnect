@@ -33,6 +33,7 @@
  */
 package fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -40,8 +41,10 @@ import java.util.Set;
 /**
  * OAuth RegisteredClient
  */
-public class RegisteredClient
+public class RegisteredClient implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+    
     private String _strClientId;
     private String _strClientSecret;
     private String _strTokenEndpointAuthMethod;

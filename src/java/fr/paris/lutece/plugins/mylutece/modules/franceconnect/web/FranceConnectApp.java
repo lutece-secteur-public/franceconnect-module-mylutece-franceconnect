@@ -39,7 +39,6 @@ import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
 import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
 import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
-import fr.paris.lutece.portal.web.PortalJspBean;
 import fr.paris.lutece.portal.web.xpages.XPage;
 
 import java.util.Map;
@@ -63,14 +62,11 @@ public class FranceConnectApp extends MVCApplication
     private static final String MARK_USER = "user";
     private static final String MARK_URL_DOLOGIN = "url_dologin";
     private static final String MARK_URL_DOLOGOUT = "url_dologout";
-    private static final String MARK_NEXT_URL = "next_url";
     private static final long serialVersionUID = 1L;
 
     /**
      * Build the Login page
-     * @param page The XPage object to fill
      * @param request The HTTP request
-     * @param locale The current locale
      * @return The XPage object containing the page content
      */
     @View( value = VIEW_HOME, defaultView = true )
