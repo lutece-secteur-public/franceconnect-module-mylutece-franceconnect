@@ -32,6 +32,7 @@ mylutece.authentication.enable=true
 mylutece.authentication.class=fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectAuthentication
 
 mylutece.url.login.page=Portal.jsp?page=franceconnect
+mylutece.url.doLogout=servlet/plugins/mylutece/modules/franceconnect/logout
 mylutece.url.default.redirect=../../Portal.jsp
 
 </pre>
@@ -105,7 +106,7 @@ mylutece.url.default.redirect=../../Portal.jsp
                             <p>                       
                             <div class="source">
 <pre>
-log4j.logger.franceconnect=DEBUG, Console
+log4j.logger.lutece.franceconnect=DEBUG, Console
 </pre>
                             </div>
                             </p>

@@ -32,6 +32,7 @@ mylutece.authentication.enable=true
 mylutece.authentication.class=fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectAuthentication
 
 mylutece.url.login.page=Portal.jsp?page=franceconnect
+mylutece.url.doLogout=servlet/plugins/mylutece/modules/franceconnect/logout
 mylutece.url.default.redirect=../../Portal.jsp
 
 </pre>
@@ -47,32 +48,32 @@ mylutece.url.default.redirect=../../Portal.jsp
 <pre>           
  
     
-    &lt;bean id="mylutece-franceconnect.server" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.ServerConfiguration"&gt;
-        &lt;property name="issuer" value="http://fcp.integ01.dev-franceconnect.fr"/&gt;
-        &lt;property name="authorizationEndpointUri"
-                                  value="https://fcp.integ01.dev-franceconnect.fr/api/v1/authorize"/&gt;
-        &lt;property name="tokenEndpointUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/token"/&gt;
-        &lt;property name="userInfoUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/userinfo"/&gt;
-        &lt;property name="userInfoTokenMethod" value="HEADER"/&gt;
-    &lt;/bean&gt;
+&lt;bean id="mylutece-franceconnect.server" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.ServerConfiguration"&gt;
+    &lt;property name="issuer" value="http://fcp.integ01.dev-franceconnect.fr"/&gt;
+    &lt;property name="authorizationEndpointUri"
+                              value="https://fcp.integ01.dev-franceconnect.fr/api/v1/authorize"/&gt;
+    &lt;property name="tokenEndpointUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/token"/&gt;
+    &lt;property name="userInfoUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/userinfo"/&gt;
+    &lt;property name="userInfoTokenMethod" value="HEADER"/&gt;
+&lt;/bean&gt;
 
-    &lt;bean id="mylutece-franceconnect.client" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.RegisteredClient"&gt;
-        &lt;property name="clientId" value="  *** à renseigner ***  "/&gt;
-        &lt;property name="clientSecret" value="  *** à renseigner ***  "/&gt;
-        &lt;property name="scope"&gt;
-            &lt;set value-type="java.lang.String"&gt;
-                &lt;value&gt;openid&lt;/value&gt;
-                &lt;value&gt;profile&lt;/value&gt;
-            &lt;/set&gt;
-        &lt;/property&gt;
-        &lt;property name="tokenEndpointAuthMethod" value=""/&gt;
-        &lt;property name="redirectUri" value=" *** à renseigner *** "/&gt;
-        &lt;property name="redirectUris"&gt;
-            &lt;set&gt;
-                &lt;value&gt; *** à renseigner *** &lt;/value&gt;
-            &lt;/set&gt;
-        &lt;/property&gt;
-    &lt;/bean&gt;
+&lt;bean id="mylutece-franceconnect.client" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.RegisteredClient"&gt;
+    &lt;property name="clientId" value="  *** à renseigner ***  "/&gt;
+    &lt;property name="clientSecret" value="  *** à renseigner ***  "/&gt;
+    &lt;property name="scope"&gt;
+        &lt;set value-type="java.lang.String"&gt;
+            &lt;value&gt;openid&lt;/value&gt;
+            &lt;value&gt;profile&lt;/value&gt;
+        &lt;/set&gt;
+    &lt;/property&gt;
+    &lt;property name="tokenEndpointAuthMethod" value=""/&gt;
+    &lt;property name="redirectUri" value=" *** à renseigner *** "/&gt;
+    &lt;property name="redirectUris"&gt;
+        &lt;set&gt;
+            &lt;value&gt; *** à renseigner *** &lt;/value&gt;
+        &lt;/set&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;
     
 
 </pre>  
@@ -105,7 +106,7 @@ mylutece.url.default.redirect=../../Portal.jsp
                             <p>                       
                             <div class="source">
 <pre>
-log4j.logger.franceconnect=DEBUG, Console
+log4j.logger.lutece.franceconnect=DEBUG, Console
 </pre>
                             </div>
                             </p>

@@ -22,6 +22,7 @@ mylutece.authentication.enable=true
 mylutece.authentication.class=fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectAuthentication
 
 mylutece.url.login.page=Portal.jsp?page=franceconnect
+mylutece.url.doLogout=servlet/plugins/mylutece/modules/franceconnect/logout
 mylutece.url.default.redirect=../../Portal.jsp
 
 
@@ -35,32 +36,32 @@ Le fichier de context du module (WEB-INF/conf/plugins/mylutece-franceconnect_con
            
  
     
-    <bean id="mylutece-franceconnect.server" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.ServerConfiguration">
-        <property name="issuer" value="http://fcp.integ01.dev-franceconnect.fr"/>
-        <property name="authorizationEndpointUri"
-                                  value="https://fcp.integ01.dev-franceconnect.fr/api/v1/authorize"/>
-        <property name="tokenEndpointUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/token"/>
-        <property name="userInfoUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/userinfo"/>
-        <property name="userInfoTokenMethod" value="HEADER"/>
-    </bean>
+<bean id="mylutece-franceconnect.server" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.ServerConfiguration">
+    <property name="issuer" value="http://fcp.integ01.dev-franceconnect.fr"/>
+    <property name="authorizationEndpointUri"
+                              value="https://fcp.integ01.dev-franceconnect.fr/api/v1/authorize"/>
+    <property name="tokenEndpointUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/token"/>
+    <property name="userInfoUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/userinfo"/>
+    <property name="userInfoTokenMethod" value="HEADER"/>
+</bean>
 
-    <bean id="mylutece-franceconnect.client" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.RegisteredClient">
-        <property name="clientId" value="  *** à renseigner ***  "/>
-        <property name="clientSecret" value="  *** à renseigner ***  "/>
-        <property name="scope">
-            <set value-type="java.lang.String">
-                <value>openid</value>
-                <value>profile</value>
-            </set>
-        </property>
-        <property name="tokenEndpointAuthMethod" value=""/>
-        <property name="redirectUri" value=" *** à renseigner *** "/>
-        <property name="redirectUris">
-            <set>
-                <value> *** à renseigner *** </value>
-            </set>
-        </property>
-    </bean>
+<bean id="mylutece-franceconnect.client" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.RegisteredClient">
+    <property name="clientId" value="  *** à renseigner ***  "/>
+    <property name="clientSecret" value="  *** à renseigner ***  "/>
+    <property name="scope">
+        <set value-type="java.lang.String">
+            <value>openid</value>
+            <value>profile</value>
+        </set>
+    </property>
+    <property name="tokenEndpointAuthMethod" value=""/>
+    <property name="redirectUri" value=" *** à renseigner *** "/>
+    <property name="redirectUris">
+        <set>
+            <value> *** à renseigner *** </value>
+        </set>
+    </property>
+</bean>
     
 
 
@@ -85,7 +86,7 @@ Il est possible de réaliser ce formulaire d'authentification dans un portlet, s
 
 ```
 
-log4j.logger.franceconnect=DEBUG, Console
+log4j.logger.lutece.franceconnect=DEBUG, Console
 
 ```
 
