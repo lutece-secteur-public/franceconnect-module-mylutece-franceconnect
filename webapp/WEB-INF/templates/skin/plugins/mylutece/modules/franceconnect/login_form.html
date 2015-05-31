@@ -3,11 +3,20 @@
 <div class="row">
     <div class="col-md-8 ">
         <div class="well">
-            <p>Connectez vous via FranceConnect : </p>
-
-            <form action="servlet/plugins/mylutece/modules/franceconnect/login" method="get">
-                <input type="image" src="images/local/skin/plugins/mylutece/modules/franceconnect/franceconnect_badge.png"  alt="Log In" id="login"/>
-            </form>
+            <#if user?? >
+                <h3>#i18n{module.mylutece.franceconnect.login_form.titleConnected} : </h3>
+                <img src="images/local/skin/plugins/mylutece/modules/franceconnect/franceconnect_badge.png" alt="FranceConnect badge"/>
+                <br>
+                <br>
+                <a href="${url_dologout}" class="btn btn-primary">
+                    #i18n{module.mylutece.franceconnect.login_form.buttonSignOut}
+                </a>
+            <#else>
+                <h3>#i18n{module.mylutece.franceconnect.login_form.titleConnect} : </h3>
+                <form action="servlet/plugins/mylutece/modules/franceconnect/login" method="get">
+                    <input type="image" src="images/local/skin/plugins/mylutece/modules/franceconnect/franceconnect_badge.png"  alt="Log In" id="login"/>
+                </form>
+            </#if>
         </div>
 
     </div>

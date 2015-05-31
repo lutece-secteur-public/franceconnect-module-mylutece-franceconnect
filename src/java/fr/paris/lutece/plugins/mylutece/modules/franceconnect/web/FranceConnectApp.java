@@ -34,16 +34,15 @@
 package fr.paris.lutece.plugins.mylutece.modules.franceconnect.web;
 
 import fr.paris.lutece.plugins.mylutece.web.MyLuteceApp;
-import fr.paris.lutece.portal.service.i18n.I18nService;
-import fr.paris.lutece.portal.service.plugin.Plugin;
-import fr.paris.lutece.portal.service.template.AppTemplateService;
+import fr.paris.lutece.portal.service.security.LuteceUser;
+import fr.paris.lutece.portal.service.security.SecurityService;
+import fr.paris.lutece.portal.util.mvc.commons.annotations.View;
+import fr.paris.lutece.portal.util.mvc.xpage.MVCApplication;
+import fr.paris.lutece.portal.util.mvc.xpage.annotations.Controller;
 import fr.paris.lutece.portal.web.PortalJspBean;
 import fr.paris.lutece.portal.web.xpages.XPage;
-import fr.paris.lutece.portal.web.xpages.XPageApplication;
-import fr.paris.lutece.util.html.HtmlTemplate;
 
-import java.util.HashMap;
-import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,49 +50,21 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * France Connect XPage Application
  */
-public class FranceConnectApp implements XPageApplication
+@Controller( xpageName = "franceconnect", pagePathI18nKey = "module.mylutece.franceconnect.loginPagePath", pageTitleI18nKey = "module.mylutece.franceconnect.loginPageTitle" )
+public class FranceConnectApp extends MVCApplication
 {
-    // Parameters
-    public static final String PARAMETER_PAGE = "page";
-    public static final String PARAMETER_PAGE_VALUE = "franceconnect";
-    public static final String PARAMETER_ERROR = "error";
-    private static final String PARAMETER_ACTION = "action";
+    // Views
+    private static final String VIEW_HOME = "home";
 
     // Templates
     private static final String TEMPLATE_LOGIN_PAGE = "skin/plugins/mylutece/modules/franceconnect/login_form.html";
 
     // Markers
-    private static final String MARK_ERROR_MESSAGE = "error_message";
+    private static final String MARK_USER = "user";
     private static final String MARK_URL_DOLOGIN = "url_dologin";
+    private static final String MARK_URL_DOLOGOUT = "url_dologout";
     private static final String MARK_NEXT_URL = "next_url";
-
-    // Actions
-    private static final String ACTION_LOGIN = "login";
-    private static final String PROPERTY_PAGETITLE_LOGIN = "module.mylutece.franceconnect.loginPageTitle";
-    private static final String PROPERTY_PATHLABEL_LOGIN = "module.mylutece.franceconnect.loginPagePath";
-
-    /**
-     * Build the XPage
-     * @param request The HTTP request
-     * @param nMode The current mode
-     * @param plugin The current plugin
-     * @return The XPage
-     */
-    @Override
-    public XPage getPage( HttpServletRequest request, int nMode, Plugin plugin )
-    {
-        XPage page = new XPage(  );
-
-        String strAction = request.getParameter( PARAMETER_ACTION );
-        Locale locale = request.getLocale(  );
-
-        if ( ( strAction == null ) || strAction.equals( ACTION_LOGIN ) )
-        {
-            return getLoginPage( page, request, locale );
-        }
-
-        return page;
-    }
+    private static final long serialVersionUID = 1L;
 
     /**
      * Build the Login page
@@ -102,35 +73,24 @@ public class FranceConnectApp implements XPageApplication
      * @param locale The current locale
      * @return The XPage object containing the page content
      */
-    private XPage getLoginPage( XPage page, HttpServletRequest request, Locale locale )
+    @View( value = VIEW_HOME, defaultView = true )
+    public XPage getHomePage( HttpServletRequest request )
     {
-        HashMap model = new HashMap(  );
+        Map<String, Object> model = getModel(  );
 
-        String strError = request.getParameter( PARAMETER_ERROR );
-        String strErrorMessage = "";
+        String strError = request.getParameter( Constants.PARAMETER_ERROR );
 
         if ( strError != null )
         {
-            strErrorMessage = I18nService.getLocalizedString( strError, locale );
+            addError( strError );
         }
 
-        String strNextUrl = PortalJspBean.getLoginNextUrl( request );
+        LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
 
-        if ( ( strNextUrl != null ) && ( strNextUrl.contains( "page=franceconnect" ) ) )
-        {
-            strNextUrl = null;
-        }
-
-        model.put( MARK_ERROR_MESSAGE, strErrorMessage );
+        model.put( MARK_USER, user );
         model.put( MARK_URL_DOLOGIN, MyLuteceApp.getDoLoginUrl(  ) );
-        model.put( MARK_NEXT_URL, strNextUrl );
+        model.put( MARK_URL_DOLOGOUT, MyLuteceApp.getDoLogoutUrl(  ) );
 
-        HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_LOGIN_PAGE, locale, model );
-
-        page.setContent( template.getHtml(  ) );
-        page.setTitle( I18nService.getLocalizedString( PROPERTY_PAGETITLE_LOGIN, locale ) );
-        page.setPathLabel( I18nService.getLocalizedString( PROPERTY_PATHLABEL_LOGIN, locale ) );
-
-        return page;
+        return getXPage( TEMPLATE_LOGIN_PAGE, request.getLocale(  ), model );
     }
 }

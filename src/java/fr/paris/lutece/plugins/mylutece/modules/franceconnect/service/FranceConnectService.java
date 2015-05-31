@@ -38,10 +38,13 @@ import fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.Fra
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.UserInfo;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
+import fr.paris.lutece.portal.web.PortalJspBean;
+import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
@@ -93,4 +96,22 @@ public final class FranceConnectService
         _logger.debug( "Process logout" );
         SecurityService.getInstance(  ).logoutUser( request );
     }
+    
+    /**
+     * redirect after login or logout
+     * @param request The HTTP request
+     * @param response The HTTP response
+     * @throws IOException if an error occurs
+     */
+    public static void redirect( HttpServletRequest request , HttpServletResponse response ) throws IOException
+    {
+        String strNextURL = PortalJspBean.getLoginNextUrl( request );
+        _logger.info( "Next URL : " + strNextURL );
+        if( strNextURL == null )
+        {
+            strNextURL = SecurityService.getInstance().getLoginPageUrl();
+        }
+        response.sendRedirect( strNextURL );
+    }
+    
 }

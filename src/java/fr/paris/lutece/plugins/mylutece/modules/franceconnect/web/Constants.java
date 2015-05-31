@@ -33,49 +33,31 @@
  */
 package fr.paris.lutece.plugins.mylutece.modules.franceconnect.web;
 
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.FranceConnectService;
-import fr.paris.lutece.portal.service.security.LuteceUser;
-import fr.paris.lutece.portal.service.security.SecurityService;
-
-import org.apache.log4j.Logger;
-
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 
 /**
- * AuthLoginServlet
+ * Constants
  */
-public class OAuthLogoutServlet extends HttpServlet
+public final class Constants
 {
-    private static final long serialVersionUID = 1L;
-    private static Logger _logger = Logger.getLogger( Constants.LOGGER_FRANCECONNECT );
+    public static final String LOGGER_FRANCECONNECT = "lutece.franceconnect";
+    public static final String RESPONSE_TYPE_CODE = "code";
+    public static final String PARAMETER_CODE = "code";
+    public static final String PARAMETER_ERROR = "error";
+    public static final String PARAMETER_SCOPE = "scope";
+    public static final String PARAMETER_STATE = "state";
+    public static final String PARAMETER_NONCE = "nonce";
+    public static final String PARAMETER_GRANT_TYPE = "grant_type";
+    public static final String PARAMETER_REDIRECT_URI = "redirect_uri";
+    public static final String PARAMETER_CLIENT_ID = "client_id";
+    public static final String PARAMETER_CLIENT_SECRET = "client_secret";
+    public static final String PARAMETER_RESPONSE_TYPE = "response_type";
+    public static final String PARAMETER_ACCESS_TOKEN = "access_token";
+    public static final String GRANT_TYPE_CODE = "authorization_code";
+    public static final String STATE_SESSION_VARIABLE = "state";
+    public static final String NONCE_SESSION_VARIABLE = "nonce";
 
-    /**
-     * {@inheritDoc }
-     */
-    @Override
-    protected void service( HttpServletRequest request, HttpServletResponse response )
-        throws ServletException, IOException
+    /** Private constructor */
+    public Constants(  )
     {
-        response.setStatus( HttpServletResponse.SC_OK );
-        response.setContentType( "text/html" );
-
-        LuteceUser user = SecurityService.getInstance(  ).getRegisteredUser( request );
-
-        if ( user != null )
-        {
-            FranceConnectService.processLogout( request );
-            _logger.debug( "Logout successful for user : " + user.getName(  ) );
-        }
-        else
-        {
-            _logger.debug( "No user to logout" );
-        }
-        FranceConnectService.redirect( request , response );
     }
 }

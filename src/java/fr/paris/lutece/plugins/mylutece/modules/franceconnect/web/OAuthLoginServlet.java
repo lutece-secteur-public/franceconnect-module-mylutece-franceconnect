@@ -44,7 +44,6 @@ import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.UserInfoSe
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.portal.web.PortalJspBean;
 import fr.paris.lutece.util.httpaccess.HttpAccess;
 import fr.paris.lutece.util.httpaccess.HttpAccessException;
 import fr.paris.lutece.util.signrequest.RequestAuthenticator;
@@ -77,25 +76,9 @@ public class OAuthLoginServlet extends HttpServlet
 {
     private static final String BEAN_CLIENT = "mylutece-franceconnect.client";
     private static final String BEAN_SERVER = "mylutece-franceconnect.server";
-    private static final String RESPONSE_TYPE_CODE = "code";
-    private static final String PARAMETER_CODE = "code";
-    private static final String PARAMETER_ERROR = "error";
-    private static final String PARAMETER_SCOPE = "scope";
-    private static final String PARAMETER_STATE = "state";
-    private static final String PARAMETER_NONCE = "nonce";
-    private static final String PARAMETER_GRANT_TYPE = "grant_type";
-    private static final String PARAMETER_REDIRECT_URI = "redirect_uri";
-    private static final String PARAMETER_CLIENT_ID = "client_id";
-    private static final String PARAMETER_CLIENT_SECRET = "client_secret";
-    private static final String PARAMETER_RESPONSE_TYPE = "response_type";
-    private static final String PARAMETER_ACCESS_TOKEN = "access_token";
-    private static final String GRANT_TYPE_CODE = "authorization_code";
     private static final String PROPERTY_ERROR_PAGE = "mylutece-franceconnect.error.page";
-    private final static String STATE_SESSION_VARIABLE = "state";
-    private final static String NONCE_SESSION_VARIABLE = "nonce";
-    private static final String LOGGER_FRANCECONNECT = "lutece.franceconnect";
     private static final long serialVersionUID = 1L;
-    private static Logger _logger = Logger.getLogger( LOGGER_FRANCECONNECT );
+    private static Logger _logger = Logger.getLogger( Constants.LOGGER_FRANCECONNECT );
     private RegisteredClient _client;
     private ServerConfiguration _server;
 
@@ -108,8 +91,8 @@ public class OAuthLoginServlet extends HttpServlet
     {
         getConfiguration(  );
 
-        String strError = request.getParameter( PARAMETER_ERROR );
-        String strCode = request.getParameter( PARAMETER_CODE );
+        String strError = request.getParameter( Constants.PARAMETER_ERROR );
+        String strCode = request.getParameter( Constants.PARAMETER_CODE );
 
         if ( strError != null )
         {
@@ -157,7 +140,7 @@ public class OAuthLoginServlet extends HttpServlet
         {
             UrlItem url = new UrlItem( AppPathService.getBaseUrl( request ) +
                     AppPropertiesService.getProperty( PROPERTY_ERROR_PAGE ) );
-            url.addParameter( PARAMETER_ERROR, strError );
+            url.addParameter( Constants.PARAMETER_ERROR, strError );
             _logger.info( strError );
             response.sendRedirect( url.getUrl(  ) );
         }
@@ -175,8 +158,16 @@ public class OAuthLoginServlet extends HttpServlet
      */
     private void handleAuthorizationCodeResponse( HttpServletRequest request, HttpServletResponse response )
     {
-        String strCode = request.getParameter( PARAMETER_CODE );
+        String strCode = request.getParameter( Constants.PARAMETER_CODE );
         _logger.info( "OAuth Authorization code received : " + strCode );
+
+        // Check valid state
+        if ( !checkState( request ) )
+        {
+            handleError( request, response, "Invalid state returned by FranceConnect !" );
+
+            return;
+        }
 
         try
         {
@@ -189,7 +180,7 @@ public class OAuthLoginServlet extends HttpServlet
                 if ( userInfo != null )
                 {
                     FranceConnectService.processAuthentication( request, userInfo );
-                    response.sendRedirect( PortalJspBean.getLoginNextUrl( request ) );
+                    FranceConnectService.redirect( request , response );
                 }
             }
         }
@@ -208,6 +199,26 @@ public class OAuthLoginServlet extends HttpServlet
     }
 
     /**
+     * check state returned by FranceConnect to the callback uri
+     * @param request The HTTP request
+     * @return True if the state is valid
+     */
+    private boolean checkState( HttpServletRequest request )
+    {
+        String strState = request.getParameter( Constants.PARAMETER_STATE );
+        HttpSession session = request.getSession(  );
+        String strStored = getStoredState( session );
+        boolean bCheck = ( ( strState == null ) || strState.equals( strStored ) );
+
+        if ( !bCheck )
+        {
+            _logger.debug( "Bad state returned by server : " + strState + " while expecting : " + strStored );
+        }
+
+        return bCheck;
+    }
+
+    /**
      * Retieve a token using an authorization code
      * @param strAuthorizationCode The authorization code
      * @return The token
@@ -219,20 +230,20 @@ public class OAuthLoginServlet extends HttpServlet
     {
         String strRedirectUri = _client.getRedirectUri(  );
         Map<String, String> mapParameters = new HashMap<String, String>(  );
-        mapParameters.put( PARAMETER_GRANT_TYPE, GRANT_TYPE_CODE );
-        mapParameters.put( PARAMETER_CODE, strAuthorizationCode );
-        mapParameters.put( PARAMETER_CLIENT_ID, _client.getClientId(  ) );
-        mapParameters.put( PARAMETER_CLIENT_SECRET, _client.getClientSecret(  ) );
+        mapParameters.put( Constants.PARAMETER_GRANT_TYPE, Constants.GRANT_TYPE_CODE );
+        mapParameters.put( Constants.PARAMETER_CODE, strAuthorizationCode );
+        mapParameters.put( Constants.PARAMETER_CLIENT_ID, _client.getClientId(  ) );
+        mapParameters.put( Constants.PARAMETER_CLIENT_SECRET, _client.getClientSecret(  ) );
 
         if ( strRedirectUri != null )
         {
-            mapParameters.put( PARAMETER_REDIRECT_URI, strRedirectUri );
+            mapParameters.put( Constants.PARAMETER_REDIRECT_URI, strRedirectUri );
         }
 
         HttpAccess httpAccess = new HttpAccess(  );
         String strUrl = _server.getTokenEndpointUri(  );
 
-        _logger.debug( "Post URL : " + strUrl + "\nParameters :\n" + traceMap( mapParameters ) );
+        _logger.debug( "Posted URL : " + strUrl + "\nParameters :\n" + traceMap( mapParameters ) );
 
         String strResponse = httpAccess.doPost( strUrl, mapParameters );
         _logger.debug( "FranceConnect response : " + strResponse );
@@ -284,13 +295,13 @@ public class OAuthLoginServlet extends HttpServlet
             HttpSession session = request.getSession( true );
 
             UrlItem url = new UrlItem( _server.getAuthorizationEndpointUri(  ) );
-            url.addParameter( PARAMETER_CLIENT_ID, _client.getClientId(  ) );
-            url.addParameter( PARAMETER_CLIENT_SECRET, _client.getClientSecret(  ) );
-            url.addParameter( PARAMETER_RESPONSE_TYPE, RESPONSE_TYPE_CODE );
-            url.addParameter( PARAMETER_REDIRECT_URI, URLEncoder.encode( _client.getRedirectUri(  ), "UTF-8" ) );
-            url.addParameter( PARAMETER_SCOPE, _client.getScopes(  ) );
-            url.addParameter( PARAMETER_STATE, createState( session ) );
-            url.addParameter( PARAMETER_NONCE, createNonce( session ) );
+            url.addParameter( Constants.PARAMETER_CLIENT_ID, _client.getClientId(  ) );
+            url.addParameter( Constants.PARAMETER_CLIENT_SECRET, _client.getClientSecret(  ) );
+            url.addParameter( Constants.PARAMETER_RESPONSE_TYPE, Constants.RESPONSE_TYPE_CODE );
+            url.addParameter( Constants.PARAMETER_REDIRECT_URI, URLEncoder.encode( _client.getRedirectUri(  ), "UTF-8" ) );
+            url.addParameter( Constants.PARAMETER_SCOPE, _client.getScopes(  ) );
+            url.addParameter( Constants.PARAMETER_STATE, createState( session ) );
+            url.addParameter( Constants.PARAMETER_NONCE, createNonce( session ) );
 
             String strUrl = url.getUrl(  );
             _logger.debug( "OAuth request : " + strUrl );
@@ -307,13 +318,13 @@ public class OAuthLoginServlet extends HttpServlet
     /**
      * Create a cryptographically random nonce and store it in the session
      *
-     * @param session
+     * @param session The session
      * @return The nonce
      */
     private static String createNonce( HttpSession session )
     {
         String nonce = new BigInteger( 50, new SecureRandom(  ) ).toString( 16 );
-        session.setAttribute( NONCE_SESSION_VARIABLE, nonce );
+        session.setAttribute( Constants.NONCE_SESSION_VARIABLE, nonce );
 
         return nonce;
     }
@@ -321,12 +332,12 @@ public class OAuthLoginServlet extends HttpServlet
     /**
      * Get the nonce we stored in the session
      *
-     * @param session
+     * @param session The session
      * @return The stored nonce
      */
     private static String getStoredNonce( HttpSession session )
     {
-        return getStoredSessionString( session, NONCE_SESSION_VARIABLE );
+        return getStoredSessionString( session, Constants.NONCE_SESSION_VARIABLE );
     }
 
     /**
@@ -338,7 +349,7 @@ public class OAuthLoginServlet extends HttpServlet
     private static String createState( HttpSession session )
     {
         String strState = new BigInteger( 50, new SecureRandom(  ) ).toString( 16 );
-        session.setAttribute( STATE_SESSION_VARIABLE, strState );
+        session.setAttribute( Constants.STATE_SESSION_VARIABLE, strState );
 
         return strState;
     }
@@ -351,7 +362,7 @@ public class OAuthLoginServlet extends HttpServlet
      */
     private static String getStoredState( HttpSession session )
     {
-        return getStoredSessionString( session, STATE_SESSION_VARIABLE );
+        return getStoredSessionString( session, Constants.STATE_SESSION_VARIABLE );
     }
 
     /**
