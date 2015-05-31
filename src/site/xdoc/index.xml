@@ -11,7 +11,9 @@
             <subsection name="Introduction">
                 <p>
                     Ce module permet aux utilisateurs d'un site ou d'une application 
-                    Lutece de s'authentifier via <a href="http://www.dev-franceconnect.fr" target="_blank">FranceConnect</a>
+                    Lutece de s'authentifier via <a href="http://www.dev-franceconnect.fr" target="_blank">FranceConnect</a>.
+                    Grâce à cette authentification, un fournisseur de service peut ensuite accéder à des ressources
+                    liées à l'utilisateur (et avec son consentement) via le protocole OpenID Connect. 
                 </p>
             </subsection>
         </section>

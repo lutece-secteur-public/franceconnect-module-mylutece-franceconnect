@@ -5,7 +5,7 @@
 
 ##Introduction
 
-Ce module permet aux utilisateurs d'un site ou d'une application Lutece de s'authentifier via [FranceConnect](http://www.dev-franceconnect.fr) 
+Ce module permet aux utilisateurs d'un site ou d'une application Lutece de s'authentifier via [FranceConnect](http://www.dev-franceconnect.fr) . Grâce à cette authentification, un fournisseur de service peut ensuite accéder à des ressourcesliées à l'utilisateur (et avec son consentement) via le protocole OpenID Connect.
 
 #Installation
 
