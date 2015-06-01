@@ -1,26 +1,27 @@
-<h2>#i18n{module.mylutece.franceconnect.login_form.pageTitle}</h2>
-<br/>
-<div class="row">
-    <div class="col-md-8 ">
-        <div class="well">
-            <#if user?? >
-                <h3>#i18n{module.mylutece.franceconnect.login_form.titleConnected} : </h3>
-                <img src="images/local/skin/plugins/mylutece/modules/franceconnect/franceconnect_badge.png" alt="FranceConnect badge"/>
-                <br>
-                <br>
-                <a href="${url_dologout}" class="btn btn-primary">
-                    #i18n{module.mylutece.franceconnect.login_form.buttonSignOut}
-                </a>
-            <#else>
-                <h3>#i18n{module.mylutece.franceconnect.login_form.titleConnect} : </h3>
-                <form action="servlet/plugins/mylutece/modules/franceconnect/login" method="get">
-                    <input type="image" src="images/local/skin/plugins/mylutece/modules/franceconnect/franceconnect_badge.png"  alt="Log In" id="login"/>
-                </form>
-            </#if>
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-lg-12">
+            <h1>#i18n{module.mylutece.franceconnect.login_form.pageTitle}</h1>
+            <br/>
+            <div class="well">
+                <#if user?? >
+                    <h3>#i18n{module.mylutece.franceconnect.login_form.titleConnected} : </h3>
+                    <img src="images/local/skin/plugins/mylutece/modules/franceconnect/franceconnect_badge.png" alt="FranceConnect badge"/>
+                    <br>
+                    <br>
+                    <a href="${url_dologout}" class="btn btn-primary">
+                        <i class="glyphicon glyphicon-log-out"></i>
+                        #i18n{module.mylutece.franceconnect.login_form.buttonSignOut}
+                    </a>
+                <#else>
+                    <h3>#i18n{module.mylutece.franceconnect.login_form.titleConnect} : </h3>
+                    <form action="servlet/plugins/mylutece/modules/franceconnect/login" method="get">
+                        <input type="image" src="images/local/skin/plugins/mylutece/modules/franceconnect/franceconnect_badge.png"  alt="Log In" id="login"/>
+                    </form>
+                </#if>
+            </div>
         </div>
-
     </div>
-
 </div>
 
 
