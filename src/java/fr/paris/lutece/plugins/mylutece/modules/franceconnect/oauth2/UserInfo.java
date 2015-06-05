@@ -83,6 +83,8 @@ public class UserInfo
     private String _strPhoneNumber;
     @JsonProperty( "phone_number_verified" )
     private String _strPhoneNumberVerified;
+    @JsonProperty( "address" )
+    private String _strAddress;
 
     /**
      * Returns the Sub
@@ -461,4 +463,25 @@ public class UserInfo
     {
         _strPhoneNumberVerified = strPhoneNumberVerified;
     }
+    
+    /**
+     * Returns the Address
+     * @return The Address
+     */
+    public String getAddress(  )
+    {
+        return _strAddress;
+    }
+
+    /**
+     * Sets the Address
+     * @param strAddress The Address
+     */
+    public void setAddress( String strAddress )
+    {
+        _strAddress = strAddress;
+    }
+
+    
+    
 }

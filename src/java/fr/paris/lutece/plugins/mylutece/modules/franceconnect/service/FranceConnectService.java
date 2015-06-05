@@ -78,6 +78,10 @@ public final class FranceConnectService
         user.setUserInfo( LuteceUser.NAME_NICKNAME, userInfo.getNickname(  ) );
         user.setUserInfo( LuteceUser.NAME_MIDDLE, userInfo.getMiddleName(  ) );
         user.setUserInfo( LuteceUser.BUSINESS_INFO_ONLINE_EMAIL, userInfo.getEmail(  ) );
+        user.setUserInfo( FranceConnectUser.ADDRESS , userInfo.getAddress() );
+        user.setUserInfo( FranceConnectUser.BIRTH_PLACE , userInfo.getBirthPlace() );
+        user.setUserInfo( FranceConnectUser.BIRTH_COUNTRY , userInfo.getBirthCountry() );
+        user.setUserInfo( FranceConnectUser.BIRTH_DATE , userInfo.getBirthDate() );
 
         user.setEmail( userInfo.getEmail(  ) );
         user.setBirthPlace( userInfo.getBirthPlace(  ) );

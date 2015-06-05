@@ -26,6 +26,9 @@
             <set value-type="java.lang.String">
                 <value>openid</value>
                 <value>profile</value>
+                <value>email</value>
+                <value>address</value>
+                <value>phone</value>
             </set>
         </property>
         <property name="tokenEndpointAuthMethod" value=""/>

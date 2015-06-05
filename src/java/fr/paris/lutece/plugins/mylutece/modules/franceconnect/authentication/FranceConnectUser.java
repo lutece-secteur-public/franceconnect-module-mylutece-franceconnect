@@ -44,6 +44,11 @@ import java.io.Serializable;
  */
 public class FranceConnectUser extends LuteceUser implements Serializable
 {
+    public static final String BIRTH_DATE = "franceconnect.user.birthDate";
+    public static final String BIRTH_PLACE = "franceconnect.user.birthPlace";
+    public static final String BIRTH_COUNTRY = "franceconnect.user.birthCountry";
+    public static final String ADDRESS = "franceconnect.user.address";
+    
     private static final long serialVersionUID = 1L;
     private String _strEmail;
     private String _strBirthPlace;
