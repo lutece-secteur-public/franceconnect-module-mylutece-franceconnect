@@ -463,7 +463,7 @@ public class UserInfo
     {
         _strPhoneNumberVerified = strPhoneNumberVerified;
     }
-    
+
     /**
      * Returns the Address
      * @return The Address
@@ -481,7 +481,4 @@ public class UserInfo
     {
         _strAddress = strAddress;
     }
-
-    
-    
 }

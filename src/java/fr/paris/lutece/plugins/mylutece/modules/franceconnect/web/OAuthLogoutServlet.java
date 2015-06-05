@@ -76,6 +76,7 @@ public class OAuthLogoutServlet extends HttpServlet
         {
             _logger.debug( "No user to logout" );
         }
-        FranceConnectService.redirect( request , response );
+
+        FranceConnectService.redirect( request, response );
     }
 }

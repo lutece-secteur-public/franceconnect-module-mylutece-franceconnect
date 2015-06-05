@@ -31,69 +31,50 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service;
+package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.jwt;
 
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.RegisteredClient;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.ServerConfiguration;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.Token;
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.jwt.JWTParser;
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.jwt.TokenValidationException;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.web.Constants;
-import fr.paris.lutece.portal.service.spring.SpringContextService;
 
 import org.apache.log4j.Logger;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.After;
+import org.junit.AfterClass;
+import static org.junit.Assert.*;
 
-import java.io.IOException;
-
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
- * TokenService
  *
+ * @author pierre
  */
-public final class TokenService
+public class JjwtJWTParserTest
 {
-    private static final String BEAN_JWT_PARSER = "mylutece-franceconnect.jwtParser";
-    private static ObjectMapper _mapper = new ObjectMapper(  );
-    private static Logger _logger = Logger.getLogger( Constants.LOGGER_FRANCECONNECT );
-
     /**
-     * private constructor
+     * Test of parseJWT method, of class JjwtJWTParser.
      */
-    private TokenService(  )
+    @Test
+    public void testParseJWT(  ) throws Exception
     {
-    }
+        System.out.println( "parseJWT" );
 
-    /**
-     * parse the JSON for a token
-     *
-     * @param strJson The JSON
-     * @return The Token
-     * @throws java.io.IOException if an error occurs
-     */
-    public static Token parse( String strJson, RegisteredClient clientConfig, ServerConfiguration serverConfig,
-        String strStoredNonce ) throws IOException, TokenValidationException
-    {
-        Token token = parseToken( strJson );
+        Token token = new Token(  );
+        token.setIdTokenString( 
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZmNwLmludGVnMDEuZGV2LWZyYW5jZWNvbm5lY3QuZnIiLCJzdWIiOiI5YzA4YjBkYTQ0ZTc3NDdhMzQ3Y2E4ZjljM2JmNzFmOTIzNzBhNWEwY2NiOGQ0YzEiLCJhdWQiOiJhOWEyNTg5NWY5ZDc2ZjZjODlhYTIxODMwNTc1YmYzNGIzZjRmNjg0YTcyYTg0YzEzYWIxYzM4MTA2NDNkODU5IiwiZXhwIjoxNDMzNTQzMDczLCJpYXQiOjE0MzM1Mzk0NzMsIm5vbmNlIjoiMTYxZDU3NTYwODk0NiIsImlkcCI6ImRnZmlwIiwiYWNyIjoiZWlkYXMyIn0.Sbd74RBtxmGO6S64Toj5RooEjHJsfuPaFwufLdQUevE" );
 
-        _logger.debug( token );
+        RegisteredClient clientConfig = new RegisteredClient(  );
+        clientConfig.setClientSecret( "7504f9f0ef08473a4c26873e9c1b898e567a39e6b76b7e60e93a0cb25cae5eb8" );
 
-        // Extract and validate the JWT (ID Token)
-        JWTParser jwtParser = SpringContextService.getBean( BEAN_JWT_PARSER );
-        jwtParser.parseJWT( token, clientConfig, serverConfig, strStoredNonce, _logger );
+        ServerConfiguration serverConfig = null;
+        String strStoredNonce = "";
+        Logger logger = Logger.getLogger( Constants.LOGGER_FRANCECONNECT );
+        JjwtJWTParser instance = new JjwtJWTParser(  );
+        instance.parseJWT( token, clientConfig, serverConfig, strStoredNonce, logger );
 
-        return token;
-    }
-
-    /**
-     * Parse the Token from a JSON string
-     * @param strJson The JSON string
-     * @return The Token
-     * @throws IOException if an error occurs
-     */
-    static Token parseToken( String strJson ) throws IOException
-    {
-        return _mapper.readValue( strJson, Token.class );
+        System.out.print( token.getIdToken(  ) );
     }
 }

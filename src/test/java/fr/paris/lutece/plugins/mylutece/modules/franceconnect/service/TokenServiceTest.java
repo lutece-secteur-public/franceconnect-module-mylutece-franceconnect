@@ -53,12 +53,12 @@ public class TokenServiceTest
      * @throws java.io.IOException
      */
     @Test
-    public void testParse(  ) throws IOException
+    public void testParseToken(  ) throws IOException
     {
         System.out.println( "parse" );
 
         String strJson = JSON_TOKEN;
-        Token token = TokenService.parse( strJson );
+        Token token = TokenService.parseToken( strJson );
 
         assertEquals( token.getAccessToken(  ), "608c2c4c250f9dcd118dc087cb23b2c4db2a848161044b03" );
         assertEquals( token.getExpiresIn(  ), 3600 );

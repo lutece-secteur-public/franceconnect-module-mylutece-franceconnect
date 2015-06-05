@@ -33,7 +33,10 @@
  */
 package fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2;
 
+import com.nimbusds.jose.Algorithm;
+
 import java.io.Serializable;
+
 import java.util.Iterator;
 import java.util.Set;
 
@@ -44,7 +47,6 @@ import java.util.Set;
 public class RegisteredClient implements Serializable
 {
     private static final long serialVersionUID = 1L;
-    
     private String _strClientId;
     private String _strClientSecret;
     private String _strTokenEndpointAuthMethod;
@@ -183,5 +185,10 @@ public class RegisteredClient implements Serializable
         }
 
         return sbScopes.toString(  );
+    }
+
+    public Algorithm getIdTokenSignedResponseAlg(  )
+    {
+        return null;
     }
 }

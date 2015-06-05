@@ -49,6 +49,7 @@ public class Token
     private int _nExpiresIn;
     @JsonProperty( "id_token" )
     private String _strIdToken;
+    private IDToken _idToken;
 
     /**
      * Returns the AccessToken
@@ -115,7 +116,7 @@ public class Token
      *
      * @return The IdToken
      */
-    public String getIdToken(  )
+    public String getIdTokenString(  )
     {
         return _strIdToken;
     }
@@ -125,8 +126,43 @@ public class Token
      *
      * @param strIdToken The IdToken
      */
-    public void setIdToken( String strIdToken )
+    public void setIdTokenString( String strIdToken )
     {
         _strIdToken = strIdToken;
+    }
+
+    /**
+     * Returns the IdToken
+     *
+     * @return The IdToken
+     */
+    public IDToken getIdToken(  )
+    {
+        return _idToken;
+    }
+
+    /**
+     * Sets the IdToken
+     *
+     * @param strIdToken The IdToken
+     */
+    public void setIdToken( IDToken idToken )
+    {
+        _idToken = idToken;
+    }
+
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public String toString(  )
+    {
+        StringBuilder sb = new StringBuilder(  );
+        sb.append( "Token infos : \n  access_token : " ).append( _strAccessToken );
+        sb.append( "\n  expires_in : " ).append( _nExpiresIn );
+        sb.append( "\n  token_type : " ).append( _strTokenType );
+        sb.append( "\n  id_token : " ).append( _strIdToken );
+
+        return sb.toString(  );
     }
 }

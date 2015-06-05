@@ -39,5 +39,8 @@
             </set>
         </property>
     </bean>
-    
+
+<!--    <bean id="mylutece-franceconnect.jwtParser" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.jwt.MitreJWTParser" /> -->
+    <bean id="mylutece-franceconnect.jwtParser" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.jwt.JjwtJWTParser" />
+        
 </beans>

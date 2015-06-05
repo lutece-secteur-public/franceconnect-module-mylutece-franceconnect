@@ -31,36 +31,30 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.mylutece.modules.franceconnect.web;
+package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.jwt;
+
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.RegisteredClient;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.ServerConfiguration;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.Token;
+
+import org.apache.log4j.Logger;
 
 
 /**
- * Constants
+ * JWTParser
  */
-public final class Constants
+public interface JWTParser
 {
-    public static final String LOGGER_FRANCECONNECT = "lutece.franceconnect";
-    public static final String RESPONSE_TYPE_CODE = "code";
-    public static final String PARAMETER_CODE = "code";
-    public static final String PARAMETER_ERROR = "error";
-    public static final String PARAMETER_SCOPE = "scope";
-    public static final String PARAMETER_STATE = "state";
-    public static final String PARAMETER_NONCE = "nonce";
-    public static final String PARAMETER_GRANT_TYPE = "grant_type";
-    public static final String PARAMETER_REDIRECT_URI = "redirect_uri";
-    public static final String PARAMETER_CLIENT_ID = "client_id";
-    public static final String PARAMETER_CLIENT_SECRET = "client_secret";
-    public static final String PARAMETER_RESPONSE_TYPE = "response_type";
-    public static final String PARAMETER_ACCESS_TOKEN = "access_token";
-    public static final String GRANT_TYPE_CODE = "authorization_code";
-    public static final String STATE_SESSION_VARIABLE = "state";
-    public static final String NONCE_SESSION_VARIABLE = "nonce";
-    public static final String CLAIM_NONCE = "nonce";
-    public static final String CLAIM_IDP = "idp";
-    public static final String CLAIM_ACR = "acr";
-
-    /** Private constructor */
-    private Constants(  )
-    {
-    }
+    /**
+     * Extract Json Web Token from the token
+     *
+     * @param token The token
+     * @param clientConfig The client configuration
+     * @param serverConfig The server configuration
+     * @param strStoredNonce The stored nonce
+     * @param logger
+     * @throws TokenValidationException if an error occurs
+     */
+    void parseJWT( Token token, RegisteredClient clientConfig, ServerConfiguration serverConfig, String strStoredNonce,
+        Logger logger ) throws TokenValidationException;
 }

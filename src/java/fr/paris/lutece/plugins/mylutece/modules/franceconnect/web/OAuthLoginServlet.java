@@ -41,6 +41,7 @@ import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.BearerToke
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.FranceConnectService;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.TokenService;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.UserInfoService;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.jwt.TokenValidationException;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -172,7 +173,7 @@ public class OAuthLoginServlet extends HttpServlet
 
         try
         {
-            Token token = getToken( strCode );
+            Token token = getToken( strCode, request.getSession(  ) );
 
             if ( token != null )
             {
@@ -181,7 +182,7 @@ public class OAuthLoginServlet extends HttpServlet
                 if ( userInfo != null )
                 {
                     FranceConnectService.processAuthentication( request, userInfo );
-                    FranceConnectService.redirect( request , response );
+                    FranceConnectService.redirect( request, response );
                 }
             }
         }
@@ -192,6 +193,12 @@ public class OAuthLoginServlet extends HttpServlet
             handleError( request, response, strError );
         }
         catch ( HttpAccessException ex )
+        {
+            String strError = "Error retrieving token : " + ex.getMessage(  );
+            _logger.error( strError, ex );
+            handleError( request, response, strError );
+        }
+        catch ( TokenValidationException ex )
         {
             String strError = "Error retrieving token : " + ex.getMessage(  );
             _logger.error( strError, ex );
@@ -226,8 +233,8 @@ public class OAuthLoginServlet extends HttpServlet
      * @throws IOException if an error occurs
      * @throws HttpAccessException if an error occurs
      */
-    private Token getToken( String strAuthorizationCode )
-        throws IOException, HttpAccessException
+    private Token getToken( String strAuthorizationCode, HttpSession session )
+        throws IOException, HttpAccessException, TokenValidationException
     {
         String strRedirectUri = _client.getRedirectUri(  );
         Map<String, String> mapParameters = new HashMap<String, String>(  );
@@ -249,7 +256,7 @@ public class OAuthLoginServlet extends HttpServlet
         String strResponse = httpAccess.doPost( strUrl, mapParameters );
         _logger.debug( "FranceConnect response : " + strResponse );
 
-        return TokenService.parse( strResponse );
+        return TokenService.parse( strResponse, _client, _server, getStoredNonce( session ) );
     }
 
     /**
@@ -397,9 +404,9 @@ public class OAuthLoginServlet extends HttpServlet
     {
         StringBuilder sbTrace = new StringBuilder(  );
 
-        for ( Entry entry : map.entrySet() )
+        for ( Entry entry : map.entrySet(  ) )
         {
-            sbTrace.append( entry.getKey() ).append( ":[" ).append( map.get( entry.getValue() ) ).append( "]\n" );
+            sbTrace.append( entry.getKey(  ) ).append( ":[" ).append( map.get( entry.getValue(  ) ) ).append( "]\n" );
         }
 
         return sbTrace.toString(  );

@@ -39,9 +39,10 @@ import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.UserInfo;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
 import fr.paris.lutece.portal.web.PortalJspBean;
-import java.io.IOException;
 
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,10 +79,10 @@ public final class FranceConnectService
         user.setUserInfo( LuteceUser.NAME_NICKNAME, userInfo.getNickname(  ) );
         user.setUserInfo( LuteceUser.NAME_MIDDLE, userInfo.getMiddleName(  ) );
         user.setUserInfo( LuteceUser.BUSINESS_INFO_ONLINE_EMAIL, userInfo.getEmail(  ) );
-        user.setUserInfo( FranceConnectUser.ADDRESS , userInfo.getAddress() );
-        user.setUserInfo( FranceConnectUser.BIRTH_PLACE , userInfo.getBirthPlace() );
-        user.setUserInfo( FranceConnectUser.BIRTH_COUNTRY , userInfo.getBirthCountry() );
-        user.setUserInfo( FranceConnectUser.BIRTH_DATE , userInfo.getBirthDate() );
+        user.setUserInfo( FranceConnectUser.ADDRESS, userInfo.getAddress(  ) );
+        user.setUserInfo( FranceConnectUser.BIRTH_PLACE, userInfo.getBirthPlace(  ) );
+        user.setUserInfo( FranceConnectUser.BIRTH_COUNTRY, userInfo.getBirthCountry(  ) );
+        user.setUserInfo( FranceConnectUser.BIRTH_DATE, userInfo.getBirthDate(  ) );
 
         user.setEmail( userInfo.getEmail(  ) );
         user.setBirthPlace( userInfo.getBirthPlace(  ) );
@@ -100,22 +101,24 @@ public final class FranceConnectService
         _logger.debug( "Process logout" );
         SecurityService.getInstance(  ).logoutUser( request );
     }
-    
+
     /**
      * redirect after login or logout
      * @param request The HTTP request
      * @param response The HTTP response
      * @throws IOException if an error occurs
      */
-    public static void redirect( HttpServletRequest request , HttpServletResponse response ) throws IOException
+    public static void redirect( HttpServletRequest request, HttpServletResponse response )
+        throws IOException
     {
         String strNextURL = PortalJspBean.getLoginNextUrl( request );
         _logger.info( "Next URL : " + strNextURL );
-        if( strNextURL == null )
+
+        if ( strNextURL == null )
         {
-            strNextURL = SecurityService.getInstance().getLoginPageUrl();
+            strNextURL = SecurityService.getInstance(  ).getLoginPageUrl(  );
         }
+
         response.sendRedirect( strNextURL );
     }
-    
 }
