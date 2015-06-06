@@ -38,22 +38,32 @@ import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.ServerConfi
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.Token;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.web.Constants;
 
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
 import org.apache.log4j.Logger;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+
 /**
- *
- * @author pierre
+ * Jjwt JWTParser Test
  */
 public class JjwtJWTParserTest
 {
+    private static final String SECRET = "7504f9f0ef08473a4c26873e9c1b898e567a39e6b76b7e60e93a0cb25cae5eb8";
+    private static final String AUDIENCE = "895fae591ccae777094931e269e46447";
+    private static final String ISSUER = "http://franceconnect.gouv.fr";
+    private static final String SUBJECT = "YWxhY3JpdMOp";
+    private static final String IDP = "dgfip";
+    private static final String NONCE = "12344354597459";
+    private static final String ACR = "eidas2";
+
     /**
      * Test of parseJWT method, of class JjwtJWTParser.
      */
@@ -63,18 +73,48 @@ public class JjwtJWTParserTest
         System.out.println( "parseJWT" );
 
         Token token = new Token(  );
-        token.setIdTokenString( 
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZmNwLmludGVnMDEuZGV2LWZyYW5jZWNvbm5lY3QuZnIiLCJzdWIiOiI5YzA4YjBkYTQ0ZTc3NDdhMzQ3Y2E4ZjljM2JmNzFmOTIzNzBhNWEwY2NiOGQ0YzEiLCJhdWQiOiJhOWEyNTg5NWY5ZDc2ZjZjODlhYTIxODMwNTc1YmYzNGIzZjRmNjg0YTcyYTg0YzEzYWIxYzM4MTA2NDNkODU5IiwiZXhwIjoxNDMzNTQzMDczLCJpYXQiOjE0MzM1Mzk0NzMsIm5vbmNlIjoiMTYxZDU3NTYwODk0NiIsImlkcCI6ImRnZmlwIiwiYWNyIjoiZWlkYXMyIn0.Sbd74RBtxmGO6S64Toj5RooEjHJsfuPaFwufLdQUevE" );
+        token.setIdTokenString( buildJWT(  ) );
 
         RegisteredClient clientConfig = new RegisteredClient(  );
-        clientConfig.setClientSecret( "7504f9f0ef08473a4c26873e9c1b898e567a39e6b76b7e60e93a0cb25cae5eb8" );
+        clientConfig.setClientSecret( SECRET );
 
         ServerConfiguration serverConfig = null;
-        String strStoredNonce = "";
+        String strStoredNonce = NONCE;
         Logger logger = Logger.getLogger( Constants.LOGGER_FRANCECONNECT );
         JjwtJWTParser instance = new JjwtJWTParser(  );
         instance.parseJWT( token, clientConfig, serverConfig, strStoredNonce, logger );
 
         System.out.print( token.getIdToken(  ) );
+    }
+
+    /**
+     * Build a JWT String
+     * @return The JWT String
+     */
+    private String buildJWT(  )
+    {
+        JwtBuilder builder = Jwts.builder(  );
+
+        long lNow = new Date(  ).getTime(  );
+        Date dateIssueAt = new Date( lNow );
+        Date dateExpiration = new Date( lNow + 300000L );
+
+        //        builder.setIssuedAt( dateIssueAt );
+        //        builder.setExpiration( dateExpiration );
+        Map<String, Object> mapClaims = new HashMap<String, Object>(  );
+        mapClaims.put( Constants.CLAIM_NONCE, NONCE );
+        mapClaims.put( Constants.CLAIM_IDP, IDP );
+        mapClaims.put( Constants.CLAIM_ACR, ACR );
+        mapClaims.put( "exp", dateExpiration );
+        mapClaims.put( "iat", dateIssueAt );
+        mapClaims.put( "sub", SUBJECT );
+        mapClaims.put( "aud", AUDIENCE );
+        mapClaims.put( "iss", ISSUER );
+
+        builder.setClaims( mapClaims );
+
+        builder.signWith( SignatureAlgorithm.HS512, SECRET.getBytes(  ) );
+
+        return builder.compact(  );
     }
 }

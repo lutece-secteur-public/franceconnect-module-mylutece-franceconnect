@@ -206,7 +206,7 @@ public class IDToken
         sb.append( "\n  sub : " ).append( _strSubject );
         sb.append( "\n  idp : " ).append( _strIdProvider );
         sb.append( "\n  nonce : " ).append( _strNonce );
-        sb.append( "\n  acr : " ).append( _strAcr );
+        sb.append( "\n  acr : " ).append( _strAcr ).append( "\n\n" );
 
         return sb.toString(  );
     }

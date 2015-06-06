@@ -161,7 +161,7 @@ public class Token
         sb.append( "Token infos : \n  access_token : " ).append( _strAccessToken );
         sb.append( "\n  expires_in : " ).append( _nExpiresIn );
         sb.append( "\n  token_type : " ).append( _strTokenType );
-        sb.append( "\n  id_token : " ).append( _strIdToken );
+        sb.append( "\n  id_token : " ).append( _strIdToken ).append( "\n\n" );
 
         return sb.toString(  );
     }
