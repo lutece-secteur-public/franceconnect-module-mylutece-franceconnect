@@ -95,7 +95,7 @@ public class IDToken
 
     /**
      * Sets the IssueAt
-     * @param strIat The IssueAt
+     * @param strIssueAt The IssueAt
      */
     public void setIssueAt( String strIssueAt )
     {
@@ -131,7 +131,7 @@ public class IDToken
 
     /**
      * Sets the Subject
-     * @param strSub The Subject
+     * @param strSubject The Subject
      */
     public void setSubject( String strSubject )
     {
@@ -198,16 +198,16 @@ public class IDToken
     @Override
     public String toString(  )
     {
-        StringBuilder sb = new StringBuilder(  );
-        sb.append( "Token ID infos : \n  aud : " ).append( _strAudience );
-        sb.append( "\n  exp : " ).append( _strExpiration );
-        sb.append( "\n  iat : " ).append( _strIssueAt );
-        sb.append( "\n  iss : " ).append( _strIssuer );
-        sb.append( "\n  sub : " ).append( _strSubject );
-        sb.append( "\n  idp : " ).append( _strIdProvider );
-        sb.append( "\n  nonce : " ).append( _strNonce );
-        sb.append( "\n  acr : " ).append( _strAcr ).append( "\n\n" );
+        StringBuilder sbToken = new StringBuilder(  );
+        sbToken.append( "Token ID infos : \n  aud : " ).append( _strAudience )
+            .append( "\n  exp : " ).append( _strExpiration )
+            .append( "\n  iat : " ).append( _strIssueAt )
+            .append( "\n  iss : " ).append( _strIssuer )
+            .append( "\n  sub : " ).append( _strSubject )
+            .append( "\n  idp : " ).append( _strIdProvider )
+            .append( "\n  nonce : " ).append( _strNonce )
+            .append( "\n  acr : " ).append( _strAcr ).append( "\n\n" );
 
-        return sb.toString(  );
+        return sbToken.toString(  );
     }
 }

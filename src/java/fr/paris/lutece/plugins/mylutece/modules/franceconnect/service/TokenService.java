@@ -50,7 +50,6 @@ import java.io.IOException;
 
 /**
  * TokenService
- *
  */
 public final class TokenService
 {
@@ -69,8 +68,12 @@ public final class TokenService
      * parse the JSON for a token
      *
      * @param strJson The JSON
+     * @param clientConfig The client configuration
+     * @param serverConfig The server configuration
+     * @param strStoredNonce The stored nonce
      * @return The Token
      * @throws java.io.IOException if an error occurs
+     * @throws TokenValidationException If the token validation failed
      */
     public static Token parse( String strJson, RegisteredClient clientConfig, ServerConfiguration serverConfig,
         String strStoredNonce ) throws IOException, TokenValidationException

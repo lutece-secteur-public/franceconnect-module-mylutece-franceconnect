@@ -53,10 +53,10 @@ public class TokenValidationException extends Exception
     /**
      * Constructor
      * @param strMessage The message
-     * @param t The cause exception
+     * @param throwable The cause exception
      */
-    public TokenValidationException( String strMessage, Throwable t )
+    public TokenValidationException( String strMessage, Throwable throwable )
     {
-        super( strMessage, t );
+        super( strMessage, throwable );
     }
 }

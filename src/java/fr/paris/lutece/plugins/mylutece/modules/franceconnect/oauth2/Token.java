@@ -144,7 +144,7 @@ public class Token
     /**
      * Sets the IdToken
      *
-     * @param strIdToken The IdToken
+     * @param idToken The IdToken
      */
     public void setIdToken( IDToken idToken )
     {
@@ -157,12 +157,12 @@ public class Token
     @Override
     public String toString(  )
     {
-        StringBuilder sb = new StringBuilder(  );
-        sb.append( "Token infos : \n  access_token : " ).append( _strAccessToken );
-        sb.append( "\n  expires_in : " ).append( _nExpiresIn );
-        sb.append( "\n  token_type : " ).append( _strTokenType );
-        sb.append( "\n  id_token : " ).append( _strIdToken ).append( "\n\n" );
+        StringBuilder sbToken = new StringBuilder(  );
+        sbToken.append( "Token infos : \n  access_token : " ).append( _strAccessToken )
+                .append( "\n  expires_in : " ).append( _nExpiresIn )
+                .append( "\n  token_type : " ).append( _strTokenType )
+                .append( "\n  id_token : " ).append( _strIdToken ).append( "\n\n" );
 
-        return sb.toString(  );
+        return sbToken.toString(  );
     }
 }

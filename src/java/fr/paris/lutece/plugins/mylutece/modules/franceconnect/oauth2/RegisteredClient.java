@@ -170,10 +170,10 @@ public class RegisteredClient implements Serializable
     {
         StringBuilder sbScopes = new StringBuilder(  );
 
-        Iterator i = _scope.iterator(  );
+        Iterator iterator = _scope.iterator(  );
         boolean bFirst = true;
 
-        while ( i.hasNext(  ) )
+        while ( iterator.hasNext(  ) )
         {
             if ( !bFirst )
             {
@@ -181,12 +181,16 @@ public class RegisteredClient implements Serializable
             }
 
             bFirst = false;
-            sbScopes.append( i.next(  ) );
+            sbScopes.append( iterator.next(  ) );
         }
 
         return sbScopes.toString(  );
     }
 
+    /**
+     * Return IDToken signed response Algorithm
+     * @return The IDToken signed response Algorithm
+     */
     public Algorithm getIdTokenSignedResponseAlg(  )
     {
         return null;

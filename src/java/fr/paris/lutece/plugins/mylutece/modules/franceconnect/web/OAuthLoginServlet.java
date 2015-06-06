@@ -60,9 +60,9 @@ import java.net.URLEncoder;
 
 import java.security.SecureRandom;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -229,15 +229,17 @@ public class OAuthLoginServlet extends HttpServlet
     /**
      * Retieve a token using an authorization code
      * @param strAuthorizationCode The authorization code
+     * @param session The HTTP session
      * @return The token
      * @throws IOException if an error occurs
      * @throws HttpAccessException if an error occurs
+     * @throws TokenValidationException If the token validation failed
      */
     private Token getToken( String strAuthorizationCode, HttpSession session )
         throws IOException, HttpAccessException, TokenValidationException
     {
         String strRedirectUri = _client.getRedirectUri(  );
-        Map<String, String> mapParameters = new HashMap<String, String>(  );
+        Map<String, String> mapParameters = new ConcurrentHashMap<String, String>(  );
         mapParameters.put( Constants.PARAMETER_GRANT_TYPE, Constants.GRANT_TYPE_CODE );
         mapParameters.put( Constants.PARAMETER_CODE, strAuthorizationCode );
         mapParameters.put( Constants.PARAMETER_CLIENT_ID, _client.getClientId(  ) );
@@ -406,7 +408,7 @@ public class OAuthLoginServlet extends HttpServlet
 
         for ( Entry entry : map.entrySet(  ) )
         {
-            sbTrace.append( entry.getKey(  ) ).append( ":[" ).append( map.get( entry.getValue(  ) ) ).append( "]\n" );
+            sbTrace.append( entry.getKey(  ) ).append( ":[" ).append( entry.getValue(  ) ).append( "]\n" );
         }
 
         return sbTrace.toString(  );

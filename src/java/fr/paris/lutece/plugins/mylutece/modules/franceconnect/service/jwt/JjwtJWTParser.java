@@ -45,6 +45,7 @@ import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.log4j.Logger;
 
@@ -66,7 +67,7 @@ public class JjwtJWTParser implements JWTParser
         try
         {
             JwtParser parser = Jwts.parser(  );
-            parser.setSigningKey( clientConfig.getClientSecret(  ).getBytes(  ) );
+            parser.setSigningKey( clientConfig.getClientSecret(  ).getBytes( "UTF-8" ) );
 
             Jwt jwt = parser.parse( strCompactJwt );
             Claims claims = (Claims) jwt.getBody(  );
@@ -97,6 +98,10 @@ public class JjwtJWTParser implements JWTParser
         {
             throw new TokenValidationException( ex.getMessage(  ), ex );
         }
+        catch (UnsupportedEncodingException ex)
+        {
+            throw new TokenValidationException( ex.getMessage(  ), ex );
+        }
     }
 
     /**
@@ -104,7 +109,7 @@ public class JjwtJWTParser implements JWTParser
      * @param claims Claims set
      * @param strStoredNonce The stored nonce
      * @return The verified nonce
-     * @throws TokenValidationException
+     * @throws TokenValidationException if the nonce is not valid
      */
     private String getVerifiedNonce( Claims claims, String strStoredNonce )
         throws TokenValidationException

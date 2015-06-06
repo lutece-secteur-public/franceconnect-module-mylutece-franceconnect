@@ -52,7 +52,7 @@ public interface JWTParser
      * @param clientConfig The client configuration
      * @param serverConfig The server configuration
      * @param strStoredNonce The stored nonce
-     * @param logger
+     * @param logger The logger
      * @throws TokenValidationException if an error occurs
      */
     void parseJWT( Token token, RegisteredClient clientConfig, ServerConfiguration serverConfig, String strStoredNonce,
