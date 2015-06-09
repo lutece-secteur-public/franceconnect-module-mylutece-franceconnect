@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service;
 
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.UserInfo;
 
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.IOException;
@@ -45,7 +46,13 @@ import java.io.IOException;
  */
 public final class UserInfoService
 {
-    private static ObjectMapper _mapper = new ObjectMapper(  );
+    private static ObjectMapper _mapper;
+
+    static
+    {
+        _mapper = new ObjectMapper(  );
+        _mapper.configure( DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false );
+    }
 
     /** private constructor */
     private UserInfoService(  )
