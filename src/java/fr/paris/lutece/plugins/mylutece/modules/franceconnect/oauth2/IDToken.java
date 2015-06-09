@@ -199,14 +199,11 @@ public class IDToken
     public String toString(  )
     {
         StringBuilder sbToken = new StringBuilder(  );
-        sbToken.append( "Token ID infos : \n  aud : " ).append( _strAudience )
-            .append( "\n  exp : " ).append( _strExpiration )
-            .append( "\n  iat : " ).append( _strIssueAt )
-            .append( "\n  iss : " ).append( _strIssuer )
-            .append( "\n  sub : " ).append( _strSubject )
-            .append( "\n  idp : " ).append( _strIdProvider )
-            .append( "\n  nonce : " ).append( _strNonce )
-            .append( "\n  acr : " ).append( _strAcr ).append( "\n\n" );
+        sbToken.append( "Token ID infos : \n  aud : " ).append( _strAudience ).append( "\n  exp : " )
+               .append( _strExpiration ).append( "\n  iat : " ).append( _strIssueAt ).append( "\n  iss : " )
+               .append( _strIssuer ).append( "\n  sub : " ).append( _strSubject ).append( "\n  idp : " )
+               .append( _strIdProvider ).append( "\n  nonce : " ).append( _strNonce ).append( "\n  acr : " )
+               .append( _strAcr ).append( "\n\n" );
 
         return sbToken.toString(  );
     }

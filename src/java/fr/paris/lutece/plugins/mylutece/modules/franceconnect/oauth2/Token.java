@@ -158,10 +158,9 @@ public class Token
     public String toString(  )
     {
         StringBuilder sbToken = new StringBuilder(  );
-        sbToken.append( "Token infos : \n  access_token : " ).append( _strAccessToken )
-                .append( "\n  expires_in : " ).append( _nExpiresIn )
-                .append( "\n  token_type : " ).append( _strTokenType )
-                .append( "\n  id_token : " ).append( _strIdToken ).append( "\n\n" );
+        sbToken.append( "Token infos : \n  access_token : " ).append( _strAccessToken ).append( "\n  expires_in : " )
+               .append( _nExpiresIn ).append( "\n  token_type : " ).append( _strTokenType ).append( "\n  id_token : " )
+               .append( _strIdToken ).append( "\n\n" );
 
         return sbToken.toString(  );
     }

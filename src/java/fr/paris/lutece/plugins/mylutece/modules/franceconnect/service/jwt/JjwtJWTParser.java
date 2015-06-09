@@ -45,9 +45,10 @@ import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
-import java.io.UnsupportedEncodingException;
 
 import org.apache.log4j.Logger;
+
+import java.io.UnsupportedEncodingException;
 
 
 /**
@@ -98,7 +99,7 @@ public class JjwtJWTParser implements JWTParser
         {
             throw new TokenValidationException( ex.getMessage(  ), ex );
         }
-        catch (UnsupportedEncodingException ex)
+        catch ( UnsupportedEncodingException ex )
         {
             throw new TokenValidationException( ex.getMessage(  ), ex );
         }
