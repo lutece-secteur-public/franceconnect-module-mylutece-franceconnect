@@ -181,7 +181,7 @@ public class OAuthLoginServlet extends HttpServlet
 
                 if ( userInfo != null )
                 {
-                    FranceConnectService.processAuthentication( request, userInfo );
+                    FranceConnectService.processAuthentication( request, userInfo, token );
                     FranceConnectService.redirect( request, response );
                 }
             }

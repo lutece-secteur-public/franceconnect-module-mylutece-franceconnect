@@ -35,6 +35,7 @@ package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service;
 
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectAuthentication;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectUser;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.Token;
 import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.UserInfo;
 import fr.paris.lutece.portal.service.security.LuteceUser;
 import fr.paris.lutece.portal.service.security.SecurityService;
@@ -69,7 +70,7 @@ public final class FranceConnectService
      * @param request The HTTP request
      * @param userInfo Users Info
      */
-    public static void processAuthentication( HttpServletRequest request, UserInfo userInfo )
+    public static void processAuthentication( HttpServletRequest request, UserInfo userInfo, Token token )
     {
         FranceConnectUser user = new FranceConnectUser( userInfo.getSub(  ), _authService );
         user.setUserInfo( LuteceUser.BDATE, userInfo.getBirthDate(  ) );
@@ -83,6 +84,7 @@ public final class FranceConnectService
         user.setUserInfo( FranceConnectUser.BIRTH_PLACE, userInfo.getBirthPlace(  ) );
         user.setUserInfo( FranceConnectUser.BIRTH_COUNTRY, userInfo.getBirthCountry(  ) );
         user.setUserInfo( FranceConnectUser.BIRTH_DATE, userInfo.getBirthDate(  ) );
+        user.setUserInfo( FranceConnectUser.ACCESS_TOKEN, token.getAccessToken(  ) );
 
         user.setEmail( userInfo.getEmail(  ) );
         user.setBirthPlace( userInfo.getBirthPlace(  ) );
