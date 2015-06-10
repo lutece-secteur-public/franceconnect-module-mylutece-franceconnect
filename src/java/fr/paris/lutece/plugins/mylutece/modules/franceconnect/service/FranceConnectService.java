@@ -85,6 +85,8 @@ public final class FranceConnectService
         user.setUserInfo( FranceConnectUser.BIRTH_COUNTRY, userInfo.getBirthCountry(  ) );
         user.setUserInfo( FranceConnectUser.BIRTH_DATE, userInfo.getBirthDate(  ) );
         user.setUserInfo( FranceConnectUser.ACCESS_TOKEN, token.getAccessToken(  ) );
+        user.setUserInfo( FranceConnectUser.IDP_ID, token.getIdToken().getIdProvider() );
+        user.setUserInfo( FranceConnectUser.IDP_ACR, token.getIdToken().getAcr() );
 
         user.setEmail( userInfo.getEmail(  ) );
         user.setBirthPlace( userInfo.getBirthPlace(  ) );

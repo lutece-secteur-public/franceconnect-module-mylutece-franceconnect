@@ -49,6 +49,9 @@ public class FranceConnectUser extends LuteceUser implements Serializable
     public static final String BIRTH_PLACE = "franceconnect.user.birthPlace";
     public static final String BIRTH_COUNTRY = "franceconnect.user.birthCountry";
     public static final String ADDRESS = "franceconnect.user.address";
+    public static final String IDP_ID = "franceconnect.user.idp.id";
+    public static final String IDP_ACR = "franceconnect.user.idp.acr";
+    
     private static final long serialVersionUID = 1L;
     private String _strEmail;
     private String _strBirthPlace;
