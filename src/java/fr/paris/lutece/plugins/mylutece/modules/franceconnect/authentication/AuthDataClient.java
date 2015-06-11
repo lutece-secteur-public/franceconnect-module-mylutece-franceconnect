@@ -31,50 +31,63 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service;
+package fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication;
 
-import fr.paris.lutece.util.signrequest.RequestAuthenticator;
+import fr.paris.lutece.plugins.franceconnect.oidc.Token;
+import fr.paris.lutece.plugins.franceconnect.oidc.UserInfo;
+import fr.paris.lutece.plugins.franceconnect.oidc.dataclient.AbstractDataClient;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.FranceConnectService;
 
-import org.apache.commons.httpclient.HttpMethodBase;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
 
-import java.util.List;
-
+import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * BearerToken Authenticator
- *
- * Add the access token into the request's header
+ * UserInfoDataClient
  */
-public class BearerTokenAuthenticator implements RequestAuthenticator
+public class AuthDataClient extends AbstractDataClient
 {
-    private String _strAccessToken;
+    private static ObjectMapper _mapper;
 
-    /**
-     * Constructor
-     * @param strAccessToken The access token value
-     */
-    public BearerTokenAuthenticator( String strAccessToken )
+    static
     {
-        _strAccessToken = strAccessToken;
+        _mapper = new ObjectMapper(  );
+        _mapper.configure( DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false );
     }
 
     /**
      * {@inheritDoc }
      */
     @Override
-    public boolean isRequestAuthenticated( HttpServletRequest request )
+    public void handleToken( Token token , HttpServletRequest  request , HttpServletResponse  response )
     {
-        return false; // not used
+        try
+        {
+            UserInfo userInfo = parse( getData( token ) );
+            if ( userInfo != null )
+            {
+                FranceConnectService.processAuthentication( request, userInfo, token );
+                FranceConnectService.redirect( request, response );
+            }
+        }
+        catch ( IOException ex )
+        {
+            _logger.error( "Error parsing UserInfo ", ex );
+        }
     }
 
     /**
-     * {@inheritDoc }
+     * parse the JSON for a token
+     * @param strJson The JSON
+     * @return The UserInfo
+     * @throws java.io.IOException if an error occurs
      */
-    @Override
-    public void authenticateRequest( HttpMethodBase hmb, List<String> list )
+    UserInfo parse( String strJson ) throws IOException
     {
-        hmb.addRequestHeader( "Authorization", String.format( "Bearer %s", _strAccessToken ) );
+        return _mapper.readValue( strJson, UserInfo.class );
     }
 }

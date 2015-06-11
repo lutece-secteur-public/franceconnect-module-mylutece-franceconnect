@@ -33,20 +33,20 @@
  */
 package fr.paris.lutece.plugins.mylutece.modules.franceconnect.service;
 
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectAuthentication;
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectUser;
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.Token;
-import fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.UserInfo;
-import fr.paris.lutece.portal.service.security.LuteceUser;
-import fr.paris.lutece.portal.service.security.SecurityService;
-import fr.paris.lutece.portal.web.PortalJspBean;
-
-import org.apache.log4j.Logger;
-
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+
+import fr.paris.lutece.plugins.franceconnect.oidc.Token;
+import fr.paris.lutece.plugins.franceconnect.oidc.UserInfo;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectAuthentication;
+import fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.FranceConnectUser;
+import fr.paris.lutece.portal.service.security.LuteceUser;
+import fr.paris.lutece.portal.service.security.SecurityService;
+import fr.paris.lutece.portal.web.PortalJspBean;
 
 
 /**

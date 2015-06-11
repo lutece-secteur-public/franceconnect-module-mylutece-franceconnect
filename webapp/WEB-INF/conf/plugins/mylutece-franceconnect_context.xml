@@ -10,18 +10,10 @@
        http://www.springframework.org/schema/tx
        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
     
-    <bean id="mylutece-franceconnect.server" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.ServerConfiguration">
-        <property name="issuer" value="http://fcp.integ01.dev-franceconnect.fr"/>
-        <property name="authorizationEndpointUri"
-                                  value="https://fcp.integ01.dev-franceconnect.fr/api/v1/authorize"/>
-        <property name="tokenEndpointUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/token"/>
-        <property name="userInfoUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/userinfo"/>
-        <property name="userInfoTokenMethod" value="HEADER"/>
-    </bean>
-
-    <bean id="mylutece-franceconnect.client" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.RegisteredClient">
-        <property name="clientId" value="a9a25895f9d76f6c89aa21830575bf34b3f4f684a72a84c13ab1c3810643d859"/>
-        <property name="clientSecret" value="7504f9f0ef08473a4c26873e9c1b898e567a39e6b76b7e60e93a0cb25cae5eb8"/>
+  <bean id="mylutece-franceconnect.authDataClient" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.authentication.AuthDataClient">
+        <property name="name" value="authData" />
+        <property name="dataServerUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/userinfo"/>
+        <property name="tokenMethod" value="HEADER"/>
         <property name="scope">
             <set value-type="java.lang.String">
                 <value>openid</value>
@@ -31,16 +23,5 @@
                 <value>phone</value>
             </set>
         </property>
-        <property name="tokenEndpointAuthMethod" value=""/>
-        <property name="redirectUri" value="http://localhost:8084/lutece/servlet/plugins/mylutece/modules/franceconnect/login"/>
-        <property name="redirectUris">
-            <set>
-                <value>http://localhost:8084/lutece/servlet/plugins/mylutece/modules/franceconnect/login</value>
-            </set>
-        </property>
     </bean>
-
-<!--    <bean id="mylutece-franceconnect.jwtParser" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.jwt.MitreJWTParser" /> -->
-    <bean id="mylutece-franceconnect.jwtParser" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.service.jwt.JjwtJWTParser" />
-        
 </beans>

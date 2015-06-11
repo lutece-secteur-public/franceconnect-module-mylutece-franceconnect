@@ -27,19 +27,4 @@
         </application>
     </applications>
 
-    <!-- servlets -->
-    <servlets>
-        <servlet>
-            <servlet-name>franceconnectAuthLogin</servlet-name>
-            <url-pattern>/servlet/plugins/mylutece/modules/franceconnect/login</url-pattern>
-            <servlet-class>fr.paris.lutece.plugins.mylutece.modules.franceconnect.web.OAuthLoginServlet</servlet-class>
-        </servlet>
-        
-        <servlet>
-            <servlet-name>franceconnectAuthLogout</servlet-name>
-            <url-pattern>/servlet/plugins/mylutece/modules/franceconnect/logout</url-pattern>
-            <servlet-class>fr.paris.lutece.plugins.mylutece.modules.franceconnect.web.OAuthLogoutServlet</servlet-class>
-        </servlet>
-
-    </servlets>
 </plug-in>

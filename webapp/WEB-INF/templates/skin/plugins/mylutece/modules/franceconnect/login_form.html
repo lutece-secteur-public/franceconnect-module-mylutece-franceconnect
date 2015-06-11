@@ -20,8 +20,9 @@
                     </a>
                 <#else>
                     <h3>#i18n{module.mylutece.franceconnect.login_form.titleConnect} : </h3>
-                    <form action="servlet/plugins/mylutece/modules/franceconnect/login" method="get">
+                    <form action="servlet/plugins/franceconnect/callback" method="get">
                         <input type="image" src="images/local/skin/plugins/mylutece/modules/franceconnect/franceconnect_badge.png"  alt="Log In" id="login"/>
+                    	<input type="hidden" name="data_client" value="authData"/>
                     </form>
                 </#if>
             </div>
