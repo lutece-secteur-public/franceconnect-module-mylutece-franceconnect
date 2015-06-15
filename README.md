@@ -5,7 +5,7 @@
 
 ##Introduction
 
-Ce module permet aux utilisateurs d'un site ou d'une application Lutece de s'authentifier via [FranceConnect](http://www.dev-franceconnect.fr) . Grâce à cette authentification, un fournisseur de service peut ensuite accéder à des ressourcesliées à l'utilisateur (et avec son consentement) via le protocole OpenID Connect.
+Ce module s'appuie sur le [plugin FranceConnect](https://github.com/lutece-platform/lutece-auth-plugin-franceconnect.git) pour réaliser une authentification MyLutece basée sur un fournisseur d'identités de la plate-forme FranceConnect.
 
 #Installation
 
@@ -29,45 +29,6 @@ mylutece.url.default.redirect=../../Portal.jsp
 ```
 
 
-Le fichier de context du module (WEB-INF/conf/plugins/mylutece-franceconnect_context.xml) doit ensuite être paramétré avec les informationsdu service client (id, secret et callback) :
-
-
-```
-           
- 
-    
-<bean id="mylutece-franceconnect.server" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.ServerConfiguration">
-    <property name="issuer" value="http://fcp.integ01.dev-franceconnect.fr"/>
-    <property name="authorizationEndpointUri"
-                              value="https://fcp.integ01.dev-franceconnect.fr/api/v1/authorize"/>
-    <property name="tokenEndpointUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/token"/>
-    <property name="userInfoUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/userinfo"/>
-    <property name="userInfoTokenMethod" value="HEADER"/>
-</bean>
-
-<bean id="mylutece-franceconnect.client" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.RegisteredClient">
-    <property name="clientId" value="  *** à renseigner ***  "/>
-    <property name="clientSecret" value="  *** à renseigner ***  "/>
-    <property name="scope">
-        <set value-type="java.lang.String">
-            <value>openid</value>
-            <value>profile</value>
-        </set>
-    </property>
-    <property name="tokenEndpointAuthMethod" value=""/>
-    <property name="redirectUri" value=" *** à renseigner *** "/>
-    <property name="redirectUris">
-        <set>
-            <value> *** à renseigner *** </value>
-        </set>
-    </property>
-</bean>
-    
-
-
-```
-
-
 ##Usage
 
 La page d'authentification FranceConnect s'appelle à partir de l'URL suivante :
@@ -82,6 +43,7 @@ Il est possible de réaliser ce formulaire d'authentification dans un portlet, s
  
 * Vérifiez bien la configuration de MyLutece comme indiqué ci-dessus.
 * Assurez-vous que le module FranceConnect est le seul module MyLutece présent dans la Webapp. Il ne doit pas y avoir d'autres fichiers `mylutece-xxxxx.properties` dans le répertoire `WEB-INF/conf/plugins/` .
+* Vérifiez bien la configuration du plugin FranceConnect.
 * L'activation des logs en mode debug se fait en ajoutant la ligne suivante dans le fichier `WEB-INF/conf/config.properties` dans la rubrique LOGGERS :
 
 ```

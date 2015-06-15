@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
     <properties>
-        <title>Module d'authentification MyLutece pour FranceConnect</title>
+        <title>Module MyLutece pour FranceConnect</title>
     </properties>
     <body>
-        <section name="Module d'authentification MyLutece pour FranceConnect">
+        <section name="Module MyLutece pour FranceConnect">
             <p>
                 <img src="images/franceconnect.jpeg" />
             </p>
             <subsection name="Introduction">
                 <p>
-                    Ce module permet aux utilisateurs d'un site ou d'une application 
-                    Lutece de s'authentifier via <a href="http://www.dev-franceconnect.fr" target="_blank">FranceConnect</a>
+                    Ce module s'appuie sur le <a href="https://github.com/lutece-platform/lutece-auth-plugin-franceconnect.git" target="_blank">plugin FranceConnect</a>
+                    pour réaliser une authentification MyLutece basée sur un fournisseur d'identités
+                    de la plate-forme FranceConnect.
                 </p>
             </subsection>
         </section>
@@ -38,53 +39,12 @@ mylutece.url.default.redirect=../../Portal.jsp
 </pre>
        </div>
        </p>
-       <p>
-           Le fichier de context du module (WEB-INF/conf/plugins/mylutece-franceconnect_context.xml) 
-           doit ensuite être paramétré avec les informations 
-           du service client (id, secret et callback) :
-       </p>
-       <p>
-       <div class="source">
-<pre>           
- 
-    
-    &lt;bean id="mylutece-franceconnect.server" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.ServerConfiguration"&gt;
-        &lt;property name="issuer" value="http://fcp.integ01.dev-franceconnect.fr"/&gt;
-        &lt;property name="authorizationEndpointUri"
-                                  value="https://fcp.integ01.dev-franceconnect.fr/api/v1/authorize"/&gt;
-        &lt;property name="tokenEndpointUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/token"/&gt;
-        &lt;property name="userInfoUri" value="https://fcp.integ01.dev-franceconnect.fr/api/v1/userinfo"/&gt;
-        &lt;property name="userInfoTokenMethod" value="HEADER"/&gt;
-    &lt;/bean&gt;
-
-    &lt;bean id="mylutece-franceconnect.client" class="fr.paris.lutece.plugins.mylutece.modules.franceconnect.oauth2.RegisteredClient"&gt;
-        &lt;property name="clientId" value="  *** à renseigner ***  "/&gt;
-        &lt;property name="clientSecret" value="  *** à renseigner ***  "/&gt;
-        &lt;property name="scope"&gt;
-            &lt;set value-type="java.lang.String"&gt;
-                &lt;value&gt;openid&lt;/value&gt;
-                &lt;value&gt;profile&lt;/value&gt;
-            &lt;/set&gt;
-        &lt;/property&gt;
-        &lt;property name="tokenEndpointAuthMethod" value=""/&gt;
-        &lt;property name="redirectUri" value=" *** à renseigner *** "/&gt;
-        &lt;property name="redirectUris"&gt;
-            &lt;set&gt;
-                &lt;value&gt; *** à renseigner *** &lt;/value&gt;
-            &lt;/set&gt;
-        &lt;/property&gt;
-    &lt;/bean&gt;
-    
-
-</pre>  
-       </div>        
-       </p>
 
                 </subsection>
                 
             <subsection name="Usage">
                 <p>La page d'authentification FranceConnect s'appelle à partir de l'URL suivante :</p>
-                <p><code>http://myhost/lutece/jsp/site/Portal.jsp?<strong>page=franceconnect</strong></code></p>
+                <p><code>http://myhost/lutece/jsp/site/Portal.jsp?page=franceconnect</code></p>
                 <p>
                     Il est possible de réaliser ce formulaire d'authentification dans un portlet, soit en
                     copiant le contenu du formulaire dans un portlet HTML, soit en modifiant la feuille
@@ -100,6 +60,7 @@ mylutece.url.default.redirect=../../Portal.jsp
                             Il ne doit pas y avoir d'autres fichiers <code>mylutece-xxxxx.properties</code> dans le
                             répertoire <code>WEB-INF/conf/plugins/</code>.                          
                         </li>
+                        <li>Vérifiez bien la configuration du plugin FranceConnect.</li>
                         <li>
                             L'activation des logs en mode debug se fait en ajoutant la ligne suivante dans le fichier
                             <code>WEB-INF/conf/config.properties</code> dans la rubrique LOGGERS :
