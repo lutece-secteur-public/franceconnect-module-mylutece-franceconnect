@@ -1,7 +1,7 @@
 
 #Module MyLutece pour FranceConnect
 
-![](http://dev.lutece.paris.fr/plugins/module-mylutece-franceconnect/images/franceconnect.jpeg)
+![](http://dev.lutece.paris.fr/plugins/module-mylutece-franceconnect/images/franceconnect.png)
 
 ##Introduction
 
